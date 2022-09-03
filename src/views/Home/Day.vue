@@ -8,7 +8,7 @@
   </q-header>
 
   <q-page-container>
-    <h1>Event</h1>
+    <h1>今日</h1>
   </q-page-container>
 </template>
 

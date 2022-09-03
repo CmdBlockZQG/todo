@@ -28,6 +28,19 @@ const router = createRouter({
           meta: { navActive: 'setting' }
         },
       ]
+    },
+    {
+      path: '/course',
+      children: [
+        {
+          path: '',
+          component: () => import('./views/Course/Course.vue')
+        },
+        {
+          path: 'new',
+          component: () => import('./views/Course/New.vue')
+        }
+      ]
     }
   ]
 })

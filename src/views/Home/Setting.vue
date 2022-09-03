@@ -10,11 +10,11 @@
   <q-page-container>
     <q-list>
       <q-item-label header>课表</q-item-label>
-      <q-item clickable v-ripple>
+      <q-item clickable v-ripple @click="router.push('/course')">
         <q-item-section avatar>
           <q-icon name="dashboard" />
         </q-item-section>
-        <q-item-section>录入上课安排</q-item-section>
+        <q-item-section>录入课程安排</q-item-section>
       </q-item>
       <q-item clickable v-ripple>
         <q-item-section avatar>
@@ -55,6 +55,9 @@
 </template>
 
 <script setup>
+  import { useRouter } from 'vue-router'
+
+  const router = useRouter()
 </script>
 
 <style scoped>
