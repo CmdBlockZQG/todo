@@ -1,7 +1,7 @@
 <template>
   <q-header elevated class="bg-primary text-white" height-hint="98">
     <q-toolbar>
-      <q-btn flat round icon="arrow_back" @touchend="router.back()" />
+      <q-btn flat round icon="arrow_back" @click="router.back()" />
       <q-toolbar-title>课程安排</q-toolbar-title>
       <q-btn flat round icon="more_vert" >
         <q-menu>
@@ -9,7 +9,7 @@
             <q-item clickable v-close-popup @click="router.push('/course/new')">
               <q-item-section>新建课程</q-item-section>
             </q-item>
-            <q-item clickable v-close-popup>
+            <q-item clickable v-close-popup @click="clearAll">
               <q-item-section>清空全部课程</q-item-section>
             </q-item>
           </q-list>
@@ -52,7 +52,7 @@
                   </thead>
                   <tbody>
                     <tr v-for="arr in course.arr">
-                      <td class="text-center">{{ stringify(arr.week) }}</td>
+                      <td class="text-center">{{ stringifyLis(arr.week) }}</td>
                       <td class="text-center">{{ arr.day }}</td>
                       <td class="text-center">{{ arr.hour[0] }}-{{ arr.hour[1] }}</td>
                       <td class="text-center">{{ arr.place }}</td>
@@ -60,8 +60,8 @@
                   </tbody>
                 </q-markup-table>
                 <div class="q-gutter-sm">
-                  <q-btn color="primary" icon="edit" label="编辑课程" />
-                  <q-btn color="negative" icon="delete" label="删除课程" />
+                  <q-btn color="primary" icon="edit" label="编辑课程" @click="router.push('/course/edit/' + course._id)" />
+                  <q-btn color="negative" icon="delete" label="删除课程" @click="delOne(course._id)" />
                 </div>
               </q-card-section>
             </q-card>
@@ -76,32 +76,44 @@
 <script setup>
   import { onMounted, ref } from 'vue'
   import { useRouter } from 'vue-router'
-  import { getCourses } from "../../service/course.js"
+  import { Dialog } from 'quasar'
+  import { getCourses, clearCourses, delCourse, stringifyLis } from "../../service/course.js"
 
   const router = useRouter()
 
   const loading = ref(true)
   const courses = ref([])
 
-  onMounted(async () => {
+  async function init() {
+    loading.value = true
     courses.value = await getCourses()
     loading.value = false
-  })
+  }
 
-  function stringify(lis) {
-    if (lis.length === 0) return ''
-    lis = lis.sort((x, y) => x - y)
-    let res = []
-    let l = 0
-    for (let i = 1; i < lis.length; ++i) {
-      if (lis[i] === lis[i - 1] + 1) continue
-      if (i === l + 1) res.push(lis[l])
-      else res.push(`${lis[l]}-${lis[i - 1]}`)
-      l = i
-    }
-    if (l + 1 === lis.length) res.push(lis[l])
-    else res.push(`${lis[l]}-${lis[lis.length - 1]}`)
-    return res.join(',')
+  onMounted(init)
+
+  function clearAll() {
+    Dialog.create({
+      title: '确定清空课程信息？',
+      message: '此操作不可逆',
+      cancel: true,
+      persistent: true
+    }).onOk(async () => {
+      await clearCourses()
+      await init()
+    })
+  }
+
+  function delOne(_id) {
+    Dialog.create({
+      title: '确定删除课程？',
+      message: '此操作不可逆',
+      cancel: true,
+      persistent: true
+    }).onOk(async () => {
+      await delCourse(_id)
+      await init()
+    })
   }
 
 </script>

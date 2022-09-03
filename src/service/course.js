@@ -25,6 +25,22 @@ function dumpRange(str) {
   else return [s, t]
 }
 
+export function stringifyLis(lis) {
+  if (lis.length === 0) return ''
+  lis = lis.sort((x, y) => x - y)
+  let res = []
+  let l = 0
+  for (let i = 1; i < lis.length; ++i) {
+    if (lis[i] === lis[i - 1] + 1) continue
+    if (i === l + 1) res.push(lis[l])
+    else res.push(`${lis[l]}-${lis[i - 1]}`)
+    l = i
+  }
+  if (l + 1 === lis.length) res.push(lis[l])
+  else res.push(`${lis[l]}-${lis[lis.length - 1]}`)
+  return res.join(',')
+}
+
 export async function addCourse(basic, arrRaw) {
   const course = {
     _id: genId(),
@@ -49,10 +65,56 @@ export async function addCourse(basic, arrRaw) {
     course.arr.push(cur._id)
   }
 
-  await db.comAdd({
+  await db.comOp({}, {
     course: [course],
     courseArr: arr
   })
+}
+
+export async function updateCourse(basic, arrRaw, delArr) {
+  // 注意：course中的arr是修改前的 策略是把以前的全部删掉，重新加入新的！
+  const course = {
+    _id: basic._id,
+    id: basic.id,
+    name: basic.name,
+    remark: basic.remark,
+    arr: []
+  }
+  const arr = []
+  for (let i of arrRaw) {
+    const day = Number(i.day)
+    if (isNaN(day) || day < 1 || day > 7 ) continue
+    const cur = {
+      _id: i._id,
+      course_id: course._id,
+      week: dumpList(i.week),
+      day: day,
+      hour: dumpRange(i.hour),
+      place: i.place
+    }
+    arr.push(cur)
+    course.arr.push(cur._id)
+  }
+
+  await db.comOp({
+    courseArr: basic.arr
+  }, {
+    course: [course],
+    courseArr: arr
+  })
+}
+
+export async function getCourseRaw(_id) {
+  const course = await db.getOne('course', _id)
+  const arr = await db.getMany('courseArr', course.arr)
+  for (const i of arr) {
+    i.hour = i.hour.join('-')
+    i.week = stringifyLis(i.week)
+  }
+  return {
+    course: course,
+    courseArr: arr
+  }
 }
 
 export async function getCourses() {
@@ -67,4 +129,16 @@ export async function getCourses() {
     res.push(course)
   }
   return res
+}
+
+export async function clearCourses() {
+  await db.clearTables(['course', 'courseArr'])
+}
+
+export async function delCourse(_id) {
+  const course = await db.getOne('course' , _id)
+  await db.comOp({
+    course: [_id],
+    courseArr: course.arr
+  }, {})
 }

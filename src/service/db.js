@@ -65,6 +65,10 @@ request.onupgradeneeded = (e) => {
   createTables()
 }
 
+function unionArray(x, y) {
+  return Array.from(new Set(x.concat(y)))
+}
+
 export default {
   raw: db,
   // 向一张表中加入一个文档
@@ -76,22 +80,30 @@ export default {
     req.onsuccess = resolve
     req.onerror = reject
   }),
-  // 向多张表中加入多个文档
-  comAdd: (data) => new Promise((resolve, reject) => {
-    // data { table1: [doc1, doc2], table2: [doc3, doc4] }
-    console.log(data)
-    const tables = Object.keys(data)
+  /*
+  聚合操作 先删后加
+  del { table1: [_id1, _id2], table2: [_id] }
+  put { table1: [doc1, doc2], table2: [doc3, doc4] }
+   */
+  comOp: (del, put) => new Promise((resolve, reject) => {
+    const tables = unionArray(Object.keys(del), Object.keys(put))
     const transaction = db.transaction(tables, 'readwrite')
-    for (let table of tables) {
+    for (let table of Object.keys(del)) {
       const objectStore = transaction.objectStore(table)
-      for (let doc of data[table]) {
-        if (!doc._id) doc._id = genId()
-        objectStore.add(doc)
+      for (let doc of del[table]) {
+        objectStore.delete(doc)
+      }
+    }
+    for (let table of Object.keys(put)) {
+      const objectStore = transaction.objectStore(table)
+      for (let doc of put[table]) {
+        objectStore.put(doc)
       }
     }
     transaction.oncomplete = resolve
     transaction.onerror = reject
   }),
+  // 读取一张表中的全部文档
   getAll: (table) => new Promise((resolve, reject) => {
     const objectStore = db.transaction([table], 'readonly').objectStore(table)
     const res = []
@@ -106,6 +118,39 @@ export default {
       }
     }
     req.onerror = reject
+  }),
+  // 读取一个文档
+  getOne: (table, _id) => new Promise((resolve, reject) => {
+    const req = db.transaction([table]).objectStore(table).get(_id)
+    req.onerror = reject
+    req.onsuccess = (e) => {
+      const res = req.result
+      if (res) resolve(res)
+      else reject(e)
+    }
+  }),
+  // 读取一些文档, lis是_id列表
+  getMany: (table, lis) => new Promise((resolve, reject) => {
+    const transaction = db.transaction([table])
+    const objectStore = transaction.objectStore(table)
+    const res = []
+    for (const _id of lis) {
+      const req = objectStore.get(_id)
+      req.onsuccess = (e) => {
+        if (req.result) res.push(req.result)
+        else reject(e)
+        if (res.length === lis.length) resolve(res)
+      }
+    }
+    transaction.onerror = reject
+  }),
+  // 删除多个表中的全部内容 tables ['tableName1', 'tableName2']
+  clearTables: (tables) => new Promise((resolve, reject) => {
+    const transaction = db.transaction(tables, 'readwrite')
+    for (let table of tables) {
+      transaction.objectStore(table).clear()
+    }
+    transaction.oncomplete = resolve
+    transaction.onerror = reject
   })
 }
-

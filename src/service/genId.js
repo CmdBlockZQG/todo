@@ -17,5 +17,5 @@ export default () => {
     seq = 0
   }
   ts = now
-  return (BigInt(ts) << 12n + BigInt(seq)).toString(36)
+  return ((BigInt(ts) << 12n) + BigInt(seq)).toString(36)
 }
