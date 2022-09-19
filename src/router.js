@@ -43,6 +43,10 @@ const router = createRouter({
         {
           path: 'edit/:_id',
           component: () => import('./views/Course/Edit.vue')
+        },
+        {
+          path: 'hour',
+          component: () => import('./views/Course/Hour.vue')
         }
       ]
     }

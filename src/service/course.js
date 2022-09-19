@@ -71,7 +71,7 @@ export async function addCourse(basic, arrRaw) {
   })
 }
 
-export async function updateCourse(basic, arrRaw, delArr) {
+export async function updateCourse(basic, arrRaw) {
   // 注意：course中的arr是修改前的 策略是把以前的全部删掉，重新加入新的！
   const course = {
     _id: basic._id,
