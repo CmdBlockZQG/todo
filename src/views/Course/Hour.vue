@@ -73,7 +73,6 @@ function stringifyTime(ts) {
 
 onMounted(async () => {
   const res = await setting.get('hour')
-  console.log(JSON.stringify(res))
   hours.value = res.map((t) => { return { start: stringifyTime(t[0]), end: stringifyTime(t[1]) } })
 })
 

@@ -117,7 +117,7 @@ export async function getCourseRaw(_id) {
   }
 }
 
-export async function getCourses() {
+export async function getAllCourses() {
   const dic = {}
   for (const arr of await db.getAll('courseArr')) {
     if (dic[arr.course_id]) dic[arr.course_id].push(arr)
@@ -141,4 +141,25 @@ export async function delCourse(_id) {
     course: [_id],
     courseArr: course.arr
   }, {})
+}
+
+export async function getCourses(week, day) {
+  const arrs = await db.getCourseArrByDay(day)
+  const course = {}
+  const res = []
+  for (const arr of arrs) {
+    if (arr.week.indexOf(week) === -1) continue
+    if (!course[arr.course_id]) course[arr.course_id] = await db.getOne('course', arr.course_id)
+    res.push({
+      course_id: arr.course_id,
+      arr_id: arr._id,
+      id: course[arr.course_id].id,
+      name: course[arr.course_id].name,
+      remark: course[arr.course_id].remark,
+      hour: arr.hour,
+      place: arr.place
+    })
+  }
+  res.sort((a, b) => a.hour[0] - b.hour[0])
+  return res
 }

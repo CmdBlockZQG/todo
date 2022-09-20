@@ -74,47 +74,47 @@
 </template>
 
 <script setup>
-  import { onMounted, ref } from 'vue'
-  import { useRouter } from 'vue-router'
-  import { Dialog } from 'quasar'
-  import { getCourses, clearCourses, delCourse, stringifyLis } from "../../service/course.js"
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { Dialog } from 'quasar'
+import { clearCourses, delCourse, stringifyLis, getAllCourses} from "../../service/course.js"
 
-  const router = useRouter()
+const router = useRouter()
 
-  const loading = ref(true)
-  const courses = ref([])
+const loading = ref(true)
+const courses = ref([])
 
-  async function init() {
-    loading.value = true
-    courses.value = await getCourses()
-    loading.value = false
-  }
+async function init() {
+  loading.value = true
+  courses.value = await getAllCourses()
+  loading.value = false
+}
 
-  onMounted(init)
+onMounted(init)
 
-  function clearAll() {
-    Dialog.create({
-      title: '确定清空课程信息？',
-      message: '此操作不可逆',
-      cancel: true,
-      persistent: true
-    }).onOk(async () => {
-      await clearCourses()
-      await init()
-    })
-  }
+function clearAll() {
+  Dialog.create({
+    title: '确定清空课程信息？',
+    message: '此操作不可逆',
+    cancel: true,
+    persistent: true
+  }).onOk(async () => {
+    await clearCourses()
+    await init()
+  })
+}
 
-  function delOne(_id) {
-    Dialog.create({
-      title: '确定删除课程？',
-      message: '此操作不可逆',
-      cancel: true,
-      persistent: true
-    }).onOk(async () => {
-      await delCourse(_id)
-      await init()
-    })
-  }
+function delOne(_id) {
+  Dialog.create({
+    title: '确定删除课程？',
+    message: '此操作不可逆',
+    cancel: true,
+    persistent: true
+  }).onOk(async () => {
+    await delCourse(_id)
+    await init()
+  })
+}
 
 </script>
 

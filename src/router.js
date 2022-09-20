@@ -30,6 +30,10 @@ const router = createRouter({
       ]
     },
     {
+      path: '/preview',
+      component: () => import('./views/Preview.vue')
+    },
+    {
       path: '/course',
       children: [
         {

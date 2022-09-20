@@ -168,6 +168,22 @@ const api = {
     }
     transaction.oncomplete = resolve
     transaction.onerror = reject
+  }),
+  // 根据星期几读取课程安排，即courseArr
+  getCourseArrByDay: (day) => new Promise((resolve, reject) => {
+    const index = db.transaction(['courseArr'], 'readonly').objectStore('courseArr').index('day')
+    const req = index.openCursor(IDBKeyRange.only(day))
+    const res = []
+    req.onsuccess = (e) => {
+      const cursor = e.target.result
+      if (cursor) {
+        res.push(cursor.value)
+        cursor.continue()
+      } else {
+        resolve(res)
+      }
+    }
+    req.onerror = reject
   })
 }
 
