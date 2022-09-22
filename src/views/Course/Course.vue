@@ -27,7 +27,7 @@
             size="4em"
           />
         </div>
-      </template>;o
+      </template>
       <template v-else-if="courses.length === 0">
         <div style="text-align: center; color: grey;">
           <div style="font-size: 80px;"><q-icon name="inbox" /></div>

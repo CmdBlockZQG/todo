@@ -27,7 +27,7 @@
           <q-icon name="date_range" />
         </q-item-section>
         <q-item-section>
-          学期开始日期
+          第一教学周周一日期
           <q-popup-proxy @before-show="updateProxy" cover transition-show="scale" transition-hide="scale">
             <q-date v-model="dateProxy" today-btn>
               <div class="row items-center justify-end q-gutter-sm">

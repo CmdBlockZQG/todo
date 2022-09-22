@@ -13,7 +13,7 @@
   </q-header>
   <q-page-container>
     <div class="q-pa-md q-gutter-md">
-      <q-chip color="primary" text-color="white" icon="event">
+      <q-chip color="primary" text-color="white" icon="event" clickable @click="tab = '3'; datePicker = true;">
         {{ today.getMonth() + 1 }}月{{ today.getDate() }}日 第{{ week }}周星期{{ dateMap[day] }}
       </q-chip>
       <div v-if="courses.length === 0" style="text-align: center; color: grey;">

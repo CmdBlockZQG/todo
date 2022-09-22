@@ -9,6 +9,10 @@
 
   <q-pull-to-refresh @refresh="init">
     <q-page-container>
+      <div v-if="courses.length === 0" style="text-align: center; color: grey;">
+        <div style="font-size: 80px;"><q-icon name="free_breakfast" /></div>
+        <p>这一天没有安排！<br>享受自由安排时间的感觉吧！</p>
+      </div>
       <div class="q-pa-md q-gutter-md">
         <Course v-for="course in courses" :course="course" :hour="hour" :active="now.getTime() - today.getTime()"></Course>
       </div>
