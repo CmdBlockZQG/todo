@@ -53,6 +53,27 @@ const router = createRouter({
           component: () => import('./views/Course/Hour.vue')
         }
       ]
+    },
+    {
+      path: '/event',
+      children: [
+        {
+          path: 'new',
+          component: () => import('./views/Event/New.vue')
+        },
+        {
+          path: 'newR',
+          component: () => import('./views/Event/NewR.vue')
+        },
+        {
+          path: 'edit/:_id',
+          component: () => import('./views/Event/Edit.vue')
+        },
+        {
+          path: 'editR/:_id',
+          component: () => import('./views/Event/EditR.vue')
+        }
+      ]
     }
   ]
 })
