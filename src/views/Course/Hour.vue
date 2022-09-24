@@ -49,6 +49,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Dialog } from 'quasar'
+import { stringifyTime, numberifyTime } from '../../service/utils.js'
 
 import setting from '../../service/setting.js'
 
@@ -63,14 +64,6 @@ const columns = [
 
 const hours = ref([{ start: '8:00', end: '8:45' }, { start: '8:00', end: '8:45' }])
 
-function stringifyTime(ts) {
-  ts /= 1000
-  const h = Math.floor(ts / 3600)
-  ts %= 3600
-  const m = Math.floor(ts / 60)
-  return `${h < 10 ? '0' + h : h}:${m < 10 ? '0' + m : m}`
-}
-
 onMounted(async () => {
   const res = await setting.get('hour')
   hours.value = res.map((t) => { return { start: stringifyTime(t[0]), end: stringifyTime(t[1]) } })
@@ -82,11 +75,6 @@ function addHour() {
 
 function delHour(i) {
   hours.value.splice(i, 1)
-}
-
-function numberifyTime(str) {
-  const res = str.split(':')
-  return (res[0] * 3600 + res[1] * 60) * 1000
 }
 
 async function submit() {

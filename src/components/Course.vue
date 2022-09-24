@@ -22,20 +22,14 @@
 
 <script setup>
 import { defineProps } from 'vue'
+import { stringifyTime } from '../service/utils.js'
+
 const props = defineProps(['course', 'hour', 'status'])
 
 const colorMap = {
   'normal': '#bdbdbd',
   'active': '#1976d2',
   'expired': '#21ba45'
-}
-
-function stringifyTime(ts) {
-  ts /= 1000
-  const h = Math.floor(ts / 3600)
-  ts %= 3600
-  const m = Math.floor(ts / 60)
-  return `${h < 10 ? '0' + h : h}:${m < 10 ? '0' + m : m}`
 }
 
 </script>

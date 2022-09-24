@@ -65,6 +65,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { date, Dialog } from 'quasar'
 import db from '../../service/db.js'
+import { numberifyTime } from '../../service/utils.js'
 
 const router = useRouter()
 
@@ -89,11 +90,6 @@ const event = ref({
 })
 
 const proxy = ref('')
-
-function numberifyTime(str) {
-  const res = str.split(':')
-  return (res[0] * 3600 + res[1] * 60) * 1000
-}
 
 async function submit() {
   const doc = {
