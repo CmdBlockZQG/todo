@@ -53,7 +53,9 @@
         </template>
       </q-field>
 
-      <q-checkbox v-model="event.expire" label="在时间结束后收入“已逾期”" />
+      <q-checkbox v-model="event.autoDel" label="在时间结束后自动删除，不收入“已逾期”" />
+      <br>
+      <q-btn color="primary" label="提交" @click="submit" />
     </div>
   </q-page-container>
 </template>
@@ -62,6 +64,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { date, Dialog } from 'quasar'
+import db from '../../service/db.js'
 
 const router = useRouter()
 
@@ -80,12 +83,30 @@ const event = ref({
   name: '',
   remark: '',
   day: date.formatDate(Date.now(), 'YYYY/MM/DD'),
-  start: date.formatDate(Date.now(), 'HH:mm'),
-  end: date.formatDate(Date.now(), 'HH:mm'),
-  expire: false
+  start: '00:00',
+  end: '23:59',
+  autoDel: false
 })
 
 const proxy = ref('')
+
+function numberifyTime(str) {
+  const res = str.split(':')
+  return (res[0] * 3600 + res[1] * 60) * 1000
+}
+
+async function submit() {
+  const doc = {
+    name: event.value.name,
+    remark: event.value.remark,
+    day: new Date(event.value.day).getTime(),
+    start: numberifyTime(event.value.start),
+    end: numberifyTime(event.value.end),
+    autoDel: event.value.autoDel
+  }
+  await db.putOne('event', doc)
+  router.back()
+}
 
 </script>
 

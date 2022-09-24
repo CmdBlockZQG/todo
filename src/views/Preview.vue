@@ -20,7 +20,7 @@
         <div style="font-size: 80px;"><q-icon name="free_breakfast" /></div>
         <p>这一天没有安排！<br>享受自由安排时间的感觉吧！</p>
       </div>
-      <Course v-for="course in courses" :course="course" :hour="hour"></Course>
+      <Course v-for="course in courses" :course="course"></Course>
     </div>
   </q-page-container>
   <q-dialog v-model="datePicker">
@@ -55,16 +55,24 @@ const day = computed(() => {
 
 const courses = ref([])
 
+async function updateCourses() {
+  return (await getCourses(week.value, day.value)).map((c) => {
+    c.startTs = hour.value[c.hour[0] - 1][0]
+    c.endTs = hour.value[c.hour[1] - 1][1]
+    return c
+  })
+}
+
 onMounted(async () => {
   termStart.value = new Date(await setting.get('termStart'))
   hour.value = await setting.get('hour')
-  courses.value = await getCourses(week.value, day.value)
+  courses.value = await updateCourses()
 })
 
 async function updateTab(tab) {
   if (tab === '3') return
   today.value = new Date(new Date(new Date().toLocaleDateString()).getTime() + 86400 * 1000 * Number(tab))
-  courses.value = await getCourses(week.value, day.value)
+  courses.value = await updateCourses()
 }
 
 const datePicker = ref(false)
@@ -73,7 +81,7 @@ const dateProxy = ref(date.formatDate(Date.now(), 'YYYY/MM/DD'))
 async function pickDate() {
   datePicker.value = false
   today.value = new Date(dateProxy.value)
-  courses.value = await getCourses(week.value, day.value)
+  courses.value = await updateCourses()
 }
 
 </script>

@@ -1,7 +1,7 @@
 import { Dialog } from 'quasar'
 import genId from './genId.js'
 
-const request = window.indexedDB.open('todo', 6)
+const request = window.indexedDB.open('todo', 11)
 let db
 
 request.onerror = (e) => {
@@ -32,6 +32,7 @@ request.onsuccess = async () => {
         { _id: 'lastUpdate', value: new Date(new Date().toLocaleDateString()).getTime() } // 上次更新的那天的时间戳
       ]
     })
+    window.location.reload()
   }
 }
 
@@ -47,7 +48,7 @@ function createTables() {
     },
     {
       name: 'event',
-      index: ['start', 'end']
+      index: ['day']
     },
     {
       name: 'eventR',
@@ -171,6 +172,22 @@ const api = {
   getCourseArrByDay: (day) => new Promise((resolve, reject) => {
     const index = db.transaction(['courseArr'], 'readonly').objectStore('courseArr').index('day')
     const req = index.openCursor(IDBKeyRange.only(day))
+    const res = []
+    req.onsuccess = (e) => {
+      const cursor = e.target.result
+      if (cursor) {
+        res.push(cursor.value)
+        cursor.continue()
+      } else {
+        resolve(res)
+      }
+    }
+    req.onerror = reject
+  }),
+  // 根据keyRange获取event列表
+  getEventByDayRange: (range) => new Promise((resolve, reject) => {
+    const index = db.transaction(['event'], 'readonly').objectStore('event').index('day')
+    const req = index.openCursor(range)
     const res = []
     req.onsuccess = (e) => {
       const cursor = e.target.result

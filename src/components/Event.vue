@@ -5,29 +5,25 @@
     :style="{ 'border-color': props.status ? colorMap[props.status] : '#bdbdbd' }"
   >
     <div class="text-h5">
-      {{ props.course.name }}
-      <q-badge color="blue">
-        {{ props.course.id }}
-      </q-badge>
+      {{ props.event.name }}
     </div>
     <div class="text-body1">
       <q-icon name="schedule" />
-      {{ stringifyTime(props.course.startTs) }} - {{ stringifyTime(props.course.endTs) }}
-      <q-icon name="place" />
-      {{ props.course.place }}
+      {{ stringifyTime(props.event.start) }} - {{ stringifyTime(props.event.end) }}
+      <q-icon name="auto_delete" v-show="props.event.autoDel" />
     </div>
-    <div class="text-body2">{{ props.course.remark }}</div>
+    <div class="text-body2">{{ props.event.remark }}</div>
   </div>
 </template>
 
 <script setup>
 import { defineProps } from 'vue'
-const props = defineProps(['course', 'hour', 'status'])
+const props = defineProps(['event', 'status'])
 
 const colorMap = {
   'normal': '#bdbdbd',
   'active': '#1976d2',
-  'expired': '#21ba45'
+  'expired': '#c10015'
 }
 
 function stringifyTime(ts) {
