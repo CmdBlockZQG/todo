@@ -19,8 +19,8 @@
 
             <q-select outlined emit-value map-options v-model="event.type" :options="typeSelect" label="重复周期" />
 
-            <template v-if="event.type === 'xd'">
-              <q-field outlined label="第一周期第一天日期" stack-label>
+            <div v-if="event.type === 'xd'" class="row">
+              <q-field outlined label="第一周期第一天日期" stack-label class="col">
                 <q-popup-proxy @before-show="proxy = event.startDay" cover transition-show="scale" transition-hide="scale">
                   <q-date v-model="proxy">
                     <div class="row items-center justify-end q-gutter-sm">
@@ -34,8 +34,8 @@
                 </template>
               </q-field>
 
-              <q-input outlined v-model="event.cycle" type="number" label="周期天数" />
-            </template>
+              <q-input outlined v-model="event.cycle" type="number" label="周期天数" class="col q-ml-sm"/>
+            </div>
 
             <q-checkbox v-model="event.autoDel" label="在时间结束后自动删除，不收入“已逾期”" />
             <br>

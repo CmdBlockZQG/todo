@@ -2,7 +2,7 @@
   <q-header elevated class="bg-primary text-white" height-hint="98">
     <q-toolbar>
       <q-btn flat round icon="arrow_back" @click="leaveWithoutSave" />
-      <q-toolbar-title>新建重复事项</q-toolbar-title>
+      <q-toolbar-title>编辑重复事项</q-toolbar-title>
     </q-toolbar>
     <q-tabs v-model="tab">
       <q-tab name="basic" label="基本信息" />
@@ -19,8 +19,8 @@
 
           <q-select outlined emit-value map-options v-model="event.type" :options="typeSelect" label="重复周期" />
 
-          <template v-if="event.type === 'xd'">
-            <q-field outlined label="第一周期第一天日期" stack-label>
+          <div v-if="event.type === 'xd'" class="row">
+            <q-field outlined label="第一周期第一天日期" stack-label class="col">
               <q-popup-proxy @before-show="proxy = event.startDay" cover transition-show="scale"
                 transition-hide="scale">
                 <q-date v-model="proxy">
@@ -35,8 +35,8 @@
               </template>
             </q-field>
 
-            <q-input outlined v-model="event.cycle" type="number" label="周期天数" />
-          </template>
+            <q-input outlined v-model="event.cycle" type="number" label="周期天数" class="col q-ml-sm"/>
+          </div>
 
           <q-checkbox v-model="event.autoDel" label="在时间结束后自动删除，不收入“已逾期”" />
           <br>
@@ -149,8 +149,8 @@ onMounted(async () => {
     plan: res.plan.map((x) => {
       return {
         day: Math.floor(x[0] / (86400 * 1000)) + 1,
-        start: stringifyTime(x[0] % (86400 * 1000)),
-        end: stringifyTime(x[1] % (86400 * 1000))
+        start: stringifyTime(x[0]),
+        end: stringifyTime(x[1])
       }
     })
   }

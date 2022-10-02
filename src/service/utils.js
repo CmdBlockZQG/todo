@@ -1,4 +1,5 @@
 export function stringifyTime(ts) {
+  ts %= 86400 * 1000
   ts /= 1000
   const h = Math.floor(ts / 3600)
   ts %= 3600

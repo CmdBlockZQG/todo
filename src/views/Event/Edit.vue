@@ -25,33 +25,35 @@
         </template>
       </q-field>
 
-      <q-field outlined label="开始时间" stack-label>
-        <q-popup-proxy @before-show="proxy = event.start" cover transition-show="scale" transition-hide="scale">
-          <q-time v-model="proxy">
-            <div class="row items-center justify-end q-gutter-sm">
-              <q-btn label="取消" color="primary" flat v-close-popup />
-              <q-btn label="确认" color="primary" flat @click="event.start = proxy" v-close-popup />
-            </div>
-          </q-time>
-        </q-popup-proxy>
-        <template v-slot:control>
-          <div class="self-center full-width no-outline" tabindex="0">{{ event.start }}</div>
-        </template>
-      </q-field>
+      <div class="row">
+        <q-field outlined label="开始时间" stack-label class="col">
+          <q-popup-proxy @before-show="proxy = event.start" cover transition-show="scale" transition-hide="scale">
+            <q-time v-model="proxy">
+              <div class="row items-center justify-end q-gutter-sm">
+                <q-btn label="取消" color="primary" flat v-close-popup />
+                <q-btn label="确认" color="primary" flat @click="event.start = proxy" v-close-popup />
+              </div>
+            </q-time>
+          </q-popup-proxy>
+          <template v-slot:control>
+            <div class="self-center full-width no-outline" tabindex="0">{{ event.start }}</div>
+          </template>
+        </q-field>
 
-      <q-field outlined label="结束时间" stack-label>
-        <q-popup-proxy @before-show="proxy = event.end" cover transition-show="scale" transition-hide="scale">
-          <q-time v-model="proxy">
-            <div class="row items-center justify-end q-gutter-sm">
-              <q-btn label="取消" color="primary" flat v-close-popup />
-              <q-btn label="确认" color="primary" flat @click="event.end = proxy" v-close-popup />
-            </div>
-          </q-time>
-        </q-popup-proxy>
-        <template v-slot:control>
-          <div class="self-center full-width no-outline" tabindex="0">{{ event.end }}</div>
-        </template>
-      </q-field>
+        <q-field outlined label="结束时间" stack-label class="col q-ml-sm">
+          <q-popup-proxy @before-show="proxy = event.end" cover transition-show="scale" transition-hide="scale">
+            <q-time v-model="proxy">
+              <div class="row items-center justify-end q-gutter-sm">
+                <q-btn label="取消" color="primary" flat v-close-popup />
+                <q-btn label="确认" color="primary" flat @click="event.end = proxy" v-close-popup />
+              </div>
+            </q-time>
+          </q-popup-proxy>
+          <template v-slot:control>
+            <div class="self-center full-width no-outline" tabindex="0">{{ event.end }}</div>
+          </template>
+        </q-field>
+      </div>
 
       <q-checkbox v-model="event.autoDel" label="在时间结束后自动删除，不收入“已逾期”" />
       <br>

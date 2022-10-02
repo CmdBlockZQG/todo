@@ -25,11 +25,18 @@
   </q-header>
 
   <q-page-container>
+    <div v-if="events.length === 0" style="text-align: center; color: grey;">
+      <div style="font-size: 80px;"><q-icon name="free_breakfast" /></div>
+      <p v-if="tab === 'today'">今天没有事项！<br>看起来可以放松放松了呢。</p>
+      <p v-if="tab === 'expired'">没有已逾期的事项！<br>今日事今日毕，可得一身轻。</p>
+      <p v-if="tab === 'future'">没有未来事项！<br>接下来几天做点什么呢？</p>
+      <p v-if="tab === 'repeat'">没有重复事项！<br>习惯的养成要靠重复，对吧？</p>
+    </div>
     <div v-if="tab === 'repeat'" class="q-pa-md q-gutter-md">
       <div v-for="event in events">
         <div
           class="q-pa-md shadow-4"
-          style="border-radius: 8px; border-left: 8px solid #bdbdbd;"
+          style="border-radius: 8px; border-left: 8px solid #1976d2;"
         >
           <div class="text-h5">
             {{ event.name }}
@@ -55,17 +62,7 @@
     </div>
     <div v-else class="q-pa-md q-gutter-md">
       <div v-for="event in events">
-        <Event :event="event" :status="getStatus(event)"></Event>
-        <q-menu touch-position>
-          <q-list style="min-width: 100px">
-            <q-item clickable v-close-popup @click="edit(event._id)">
-              <q-item-section>编辑事项</q-item-section>
-            </q-item>
-            <q-item clickable v-close-popup @click="del(event._id, event.name)">
-              <q-item-section>删除事项</q-item-section>
-            </q-item>
-          </q-list>
-        </q-menu>
+        <Event :event="event" :status="getStatus(event)" @delete="updateTab(tab)"></Event>
       </div>
     </div>
   </q-page-container>
@@ -94,9 +91,14 @@ const typeMap = {
   'ew': '双周'
 }
 
-onMounted(async () => {
+async function init() {
+  now.value = new Date()
   events.value = await getTodayEvents(today.value.getTime())
   events.value.sort((a, b) => a.end === b.end ? a.start - b.start : a.end - b.end)
+}
+onMounted(init)
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') init()
 })
 
 async function updateTab(tab) {
@@ -125,22 +127,6 @@ function getStatus(event) {
   if (event.start <= t && t <= event.end) return 'active'
   if (event.end < t) return 'expired'
   return 'normal'
-}
-
-function edit(_id) {
-  router.push('/event/edit/' + _id)
-}
-
-function del(_id, hint) {
-  Dialog.create({
-    title: '确定删除事项？',
-    message: `事项“${hint}”将被删除，且此操作不可逆。`,
-    cancel: true,
-    persistent: true
-  }).onOk(async () => {
-    await db.delOne('event', _id)
-    await updateTab(tab.value)
-  })
 }
 
 function editR(_id) {
