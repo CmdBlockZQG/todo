@@ -144,6 +144,12 @@ const api = {
       else reject(e)
     }
   }),
+  // 删除一个文档
+  delOne: (table, _id) => new Promise((resolve, reject) => {
+    const req = db.transaction([table], 'readwrite').objectStore(table).delete(_id)
+    req.onerror = reject
+    req.onsuccess = resolve
+  }),
   // 读取一些文档, lis是_id列表
   getMany: (table, lis) => new Promise((resolve, reject) => {
     const transaction = db.transaction([table])
