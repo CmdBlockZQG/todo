@@ -1,5 +1,6 @@
 import genId from '../service/genId.js'
 import db from './db.js'
+import setting from './setting.js'
 
 function dumpList(str) {
   const res = []
@@ -158,6 +159,24 @@ export async function getCourses(week, day) {
       remark: course[arr.course_id].remark,
       hour: arr.hour,
       place: arr.place
+    })
+  }
+  const periodsRaw = await setting.get('period')
+  let period = {}, periods = {}
+  for (let i = 0; i < periodsRaw.length; ++i) {
+    periods[i] = true
+    for (let j = periodsRaw[i][0]; j <= periodsRaw[i][1]; ++j) {
+      period[j] = i
+    }
+  }
+  for (const c of res) {
+    for (let j = c.hour[0]; j <= c.hour[1]; ++j){
+      delete periods[period[j]]
+    }
+  }
+  for (const p of Object.keys(periods)) {
+    res.push({
+      hour: periodsRaw[p]
     })
   }
   res.sort((a, b) => a.hour[0] - b.hour[0])

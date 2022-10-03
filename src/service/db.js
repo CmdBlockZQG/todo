@@ -20,7 +20,6 @@ request.onerror = (e) => {
 request.onsuccess = async () => {
   db = request.result
   console.log('indexDB打开成功')
-  console.log()
   try {
     await api.getOne('setting', 'termStart')
   } catch (e) {
@@ -29,6 +28,7 @@ request.onsuccess = async () => {
         { _id: 'termStart', value: 1661702400000 }, // 第一教学周的星期一
         // 小节课的开始和结束时间
         { _id: 'hour', value: [[28800000,31500000],[31800000,34500000],[35400000,38100000],[38400000,41100000],[41400000,44100000],[50400000,53100000],[53400000,56100000],[57000000,59700000],[60000000,62700000],[66600000,69300000],[69600000,72300000],[72600000,75300000]] },
+        { _id: 'period', value: [[1,2],[3,5],[6,7],[8,9],[10,12]] },
         { _id: 'lastUpdate', value: new Date(new Date().toLocaleDateString()).getTime() } // 上次更新的那天的时间戳
       ]
     })

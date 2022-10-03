@@ -22,6 +22,12 @@
         </q-item-section>
         <q-item-section>小节课时间点</q-item-section>
       </q-item>
+      <q-item clickable v-ripple @click="router.push('/course/period')">
+        <q-item-section avatar>
+          <q-icon name="view_timeline" />
+        </q-item-section>
+        <q-item-section>大节课安排</q-item-section>
+      </q-item>
       <q-item clickable v-ripple>
         <q-item-section avatar>
           <q-icon name="date_range" />

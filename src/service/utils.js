@@ -14,7 +14,10 @@ export function stringifyTimeAP(ts) {
   ts %= 3600
   const m = Math.floor(ts / 60)
   // 对我来说，下午一点以前都是上午
-  return `${h > 12 ? 'P' : 'A'}${h > 12 ? h - 12 : h}:${m < 10 ? '0' + m : m}`
+  let c = 'A'
+  if (h > 12) c = 'P'
+  if (h >= 18) c = 'N'
+  return `${c}${h > 12 ? h - 12 : h}:${m < 10 ? '0' + m : m}`
 }
 
 export function stringifyTimeSEAP(ts1, ts2) {

@@ -10,7 +10,7 @@
     <div class="text-body1">
       <q-icon name="schedule" />
       {{ stringifyTimeSEAP(props.course.startTs, props.course.endTs) }}
-      <q-icon name="place" />
+      <q-icon name="place" v-if="props.course.place"/>
       {{ props.course.place }}
     </div>
     <div class="text-body2">{{ props.course.remark }}</div>

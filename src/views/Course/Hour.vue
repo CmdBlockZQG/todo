@@ -62,7 +62,7 @@ const columns = [
   { name: 'op', label: '操作' }
 ]
 
-const hours = ref([{ start: '8:00', end: '8:45' }, { start: '8:00', end: '8:45' }])
+const hours = ref([])
 
 onMounted(async () => {
   const res = await setting.get('hour')

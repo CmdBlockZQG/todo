@@ -51,6 +51,10 @@ const router = createRouter({
         {
           path: 'hour',
           component: () => import('./views/Course/Hour.vue')
+        },
+        {
+          path: 'period',
+          component: () => import('./views/Course/Period.vue')
         }
       ]
     },
