@@ -29,7 +29,7 @@
       </q-toolbar>
       <div class="q-pa-md q-gutter-md">
         <div class="title">事项</div>
-        <Event v-for="event in expiredEvents" :event="event" :status="'expired'" @delete="init"></Event>
+        <Event v-for="event in expiredEvents" :event="event" :status="'expired'" :ts="now.getTime()" @delete="init"></Event>
         <div class="title">计划</div>
         <Plan v-for="plan in expiredPlans" :plan="plan" :status="'expired'" :ts="now.getTime()" @delete="init"></Plan>
       </div>

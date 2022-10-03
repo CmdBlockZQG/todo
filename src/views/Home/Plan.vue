@@ -14,7 +14,7 @@
     </q-toolbar>
 
     <q-tabs v-model="tab">
-      <q-tab name="active" label="进行中" />
+      <q-tab name="all" label="全部" />
       <q-tab name="expired" label="逾期" />
       <q-tab name="future" label="未来" />
     </q-tabs>
@@ -22,14 +22,14 @@
 
   <q-page-container>
     <q-tab-panels v-model="tab">
-      <q-tab-panel name="active">
-        <div v-if="activePlans.length === 0" style="text-align: center; color: grey;">
+      <q-tab-panel name="all">
+        <div v-if="plans.length === 0" style="text-align: center; color: grey;">
           <div style="font-size: 80px;"><q-icon name="free_breakfast" /></div>
-          <p>没有进行中的计划！<br>赶紧把空虚的生活充实起来吧！</p>
+          <p>没有计划！<br>赶紧把空虚的生活充实起来吧！</p>
         </div>
         <div class="q-gutter-md">
-          <div v-for="plan in activePlans">
-            <Plan :plan="plan" :status="'active'" @delete="init" :ts="now.getTime()"></Plan>
+          <div v-for="(plan, i) in plans">
+            <Plan :plan="plan" :status="planStatus[i]" @delete="init" :ts="now.getTime()"></Plan>
           </div>
         </div>
       </q-tab-panel>
@@ -69,7 +69,7 @@ import Plan from '../../components/Plan.vue'
 
 const router = useRouter()
 const now = ref(new Date())
-const tab = ref('active')
+const tab = ref('all')
 
 const plans = ref([])
 
@@ -83,7 +83,11 @@ document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible') init()
 })
 
-const activePlans = computed(() => plans.value.filter((x) => x.start <= now.value.getTime() && now.value.getTime() <= x.end))
+const planStatus = computed(() => plans.value.map((x) => {
+  if (x.end < now.value.getTime()) return 'expired'
+  if (x.start > now.value.getTime()) return 'normal'
+  return 'active'
+}))
 const expiredPlans = computed(() => plans.value.filter((x) => x.end < now.value.getTime()))
 const futurePlans = computed(() => plans.value.filter((x) => x.start > now.value.getTime()))
 

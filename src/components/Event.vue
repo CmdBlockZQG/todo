@@ -34,7 +34,7 @@ import db from '../service/db.js'
 import { stringifyTime } from '../service/utils.js'
 
 const emit = defineEmits(['delete'])
-const props = defineProps(['event', 'status'])
+const props = defineProps(['event', 'status', 'ts'])
 const router = useRouter()
 
 const colorMap = {
@@ -44,8 +44,19 @@ const colorMap = {
 }
 
 const dateStr = computed(() => {
-  const t = new Date(props.event.day).toLocaleDateString()
-  return t === new Date().toLocaleDateString() ? '' : t
+  let todayTs
+  if (props.ts) {
+    todayTs = new Date(new Date(props.ts).toLocaleDateString()).getTime()
+  } else {
+    todayTs = new Date(new Date().toLocaleDateString()).getTime()
+  }
+  if (props.event.day === todayTs) return ''
+  if (props.event.day === todayTs - 86400000) return '昨天'
+  if (props.event.day === todayTs + 86400000) return '明天'
+  if (props.event.day === todayTs - 86400000 * 2) return '前天'
+  if (props.event.day === todayTs + 86400000 * 2) return '后天'
+  return new Date(props.event.day).toLocaleDateString()
+
 })
 
 function del() {

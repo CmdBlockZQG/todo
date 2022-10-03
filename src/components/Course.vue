@@ -6,13 +6,10 @@
   >
     <div class="text-h5">
       {{ props.course.name }}
-      <q-badge color="blue">
-        {{ props.course.id }}
-      </q-badge>
     </div>
     <div class="text-body1">
       <q-icon name="schedule" />
-      {{ stringifyTime(props.course.startTs) }} — {{ stringifyTime(props.course.endTs) }}
+      {{ stringifyTimeSEAP(props.course.startTs, props.course.endTs) }}
       <q-icon name="place" />
       {{ props.course.place }}
     </div>
@@ -22,7 +19,7 @@
 
 <script setup>
 import { defineProps } from 'vue'
-import { stringifyTime } from '../service/utils.js'
+import { stringifyTimeSEAP } from '../service/utils.js'
 
 const props = defineProps(['course', 'status'])
 

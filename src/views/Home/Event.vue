@@ -11,13 +11,19 @@
             <q-item clickable v-close-popup @click="router.push('/event/newR')">
               <q-item-section>新建重复事项</q-item-section>
             </q-item>
+            <q-item clickable v-close-popup @click="shortcut.明天全员核酸()">
+              <q-item-section>明天全员核酸</q-item-section>
+            </q-item>
+            <q-item clickable v-close-popup @click="shortcut.明天一号床核酸()">
+              <q-item-section>明天一号床核酸</q-item-section>
+            </q-item>
           </q-list>
         </q-menu>
       </q-btn>
     </q-toolbar>
 
     <q-tabs v-model="tab" @update:model-value="updateTab">
-      <q-tab name="today" label="今日" />
+      <q-tab name="all" label="全部" />
       <q-tab name="expired" label="逾期" />
       <q-tab name="future" label="未来" />
       <q-tab name="repeat" label="重复" />
@@ -27,7 +33,7 @@
   <q-page-container>
     <div v-if="events.length === 0" style="text-align: center; color: grey;">
       <div style="font-size: 80px;"><q-icon name="free_breakfast" /></div>
-      <p v-if="tab === 'today'">今天没有事项！<br>看起来可以放松放松了呢。</p>
+      <p v-if="tab === 'all'">没有事项！<br>看起来可以放松放松了呢。</p>
       <p v-if="tab === 'expired'">没有已逾期的事项！<br>今日事今日毕，可得一身轻。</p>
       <p v-if="tab === 'future'">没有未来事项！<br>接下来几天做点什么呢？</p>
       <p v-if="tab === 'repeat'">没有重复事项！<br>习惯的养成要靠重复，对吧？</p>
@@ -62,7 +68,7 @@
     </div>
     <div v-else class="q-pa-md q-gutter-md">
       <div v-for="event in events">
-        <Event :event="event" :status="getStatus(event)" @delete="updateTab(tab)"></Event>
+        <Event :event="event" :status="getStatus(event)" @delete="updateTab(tab)" :ts="now.getTime()"></Event>
       </div>
     </div>
   </q-page-container>
@@ -72,15 +78,17 @@
 import { onMounted, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { Dialog } from 'quasar'
-import { getTodayEvents, getExpiredEvents, getFutureEvents } from '../../service/event.js'
+import { getAllEvents, getExpiredEvents, getFutureEvents } from '../../service/event.js'
 import { dailyUpdate } from '../../service/day.js'
 import db from '../../service/db.js'
 import Event from '../../components/Event.vue'
 
+import shortcut from '../../service/shortcut.js'
+
 const router = useRouter()
 const now = ref(new Date())
 const today = computed(() => new Date(now.value.toLocaleDateString()))
-const tab = ref('today')
+const tab = ref('all')
 
 const events = ref([])
 
@@ -95,7 +103,7 @@ const typeMap = {
 async function init() {
   await dailyUpdate()
   now.value = new Date()
-  events.value = await getTodayEvents(today.value.getTime())
+  events.value = await getAllEvents(today.value.getTime())
 }
 onMounted(init)
 document.addEventListener('visibilitychange', () => {
@@ -104,8 +112,8 @@ document.addEventListener('visibilitychange', () => {
 
 async function updateTab(tab) {
   switch (tab) {
-    case 'today':
-      events.value = await getTodayEvents(today.value.getTime())
+    case 'all':
+      events.value = await getAllEvents(today.value.getTime())
       break
     case 'expired':
       events.value = await getExpiredEvents(today.value.getTime())
@@ -120,8 +128,8 @@ async function updateTab(tab) {
 }
 
 function getStatus(event) {
-  if (tab.value === 'expired') return 'expired'
-  if (tab.value === 'future') return 'normal'
+  if (event.day < today.value.getTime()) return 'expired'
+  if (today.value.getTime() < event.day) return 'normal'
   const t = now.value.getTime() - today.value.getTime()
   if (t < event.start) return 'normal'
   if (event.start <= t && t <= event.end) return 'active'

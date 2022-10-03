@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import { Quasar, Dialog } from 'quasar'
+import { Quasar, Dialog, Notify } from 'quasar'
 
 import router from './router.js'
 import App from './App.vue'
@@ -15,7 +15,8 @@ app.use(router)
 app.use(Quasar, {
   lang: lang,
   plugins: {
-    Dialog
+    Dialog,
+    Notify
   }
 })
 app.mount('#app')
