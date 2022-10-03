@@ -54,10 +54,11 @@
               <th>第几天</th>
               <th>开始时刻</th>
               <th>结束时刻</th>
+              <th>操作</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="plan in event.plan">
+            <tr v-for="(plan, i) in event.plan">
               <td>
                 {{ plan.day }}
                 <q-popup-edit v-model.number="plan.day" buttons v-slot="scope">
@@ -75,6 +76,9 @@
                 <q-popup-edit v-model="plan.end" buttons v-slot="scope">
                   <q-input type="text" v-model="scope.value" dense autofocus @keyup.enter="scope.set" />
                 </q-popup-edit>
+              </td>
+              <td>
+                <q-btn flat round color="red" icon="delete" @click="event.plan.splice(i, 1)" />
               </td>
             </tr>
           </tbody>

@@ -5,7 +5,7 @@ const request = window.indexedDB.open('todo', 1)
 let db
 
 request.onerror = (e) => {
-  console.log('indexDB错误：', e.toString())
+  console.log('indexDB错误：', e)
   Dialog.create({
     title: '致命错误！',
     message: '本应用需要在您的机器上创建数据库以存储相关数据，请允许相关权限！',
