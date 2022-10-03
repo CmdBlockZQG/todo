@@ -16,13 +16,14 @@ export async function dailyUpdate() {
 
   let res = []
   for (let ts = lastUpdateTs + 86400 * 1000; ts <= todayTs; ts += 86400 * 1000) {
-    res = res.concat(arrangeEvent(eventR, ts, week, day))
+    res = res.concat(await arrangeEvent(eventR, ts, week, day))
   }
   await db.comOp({}, { 'event': res })
   await setting.set('lastUpdate', todayTs)
 }
 
-export function arrangeEvent(eventR, dayTs, week, day) {
+export async function arrangeEvent(eventR, dayTs, week, day) {
+  if (!eventR) eventR = await db.getAll('eventR')
   let res = []
   const addToRes = (e, p) => {
     res.push({

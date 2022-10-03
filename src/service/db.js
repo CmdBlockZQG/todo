@@ -1,7 +1,7 @@
 import { Dialog } from 'quasar'
 import genId from './genId.js'
 
-const request = window.indexedDB.open('todo', 11)
+const request = window.indexedDB.open('todo', 1)
 let db
 
 request.onerror = (e) => {

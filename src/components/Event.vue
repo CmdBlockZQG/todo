@@ -1,6 +1,6 @@
 <template>
   <div
-    class="q-pa-md shadow-4"
+    class="q-pa-sm shadow-4"
     style="border-radius: 8px; border-left: 8px solid;"
     :style="{ 'border-color': props.status ? colorMap[props.status] : '#bdbdbd' }"
   >
@@ -13,17 +13,17 @@
       <q-icon name="auto_delete" v-show="props.event.autoDel" />
     </div>
     <div class="text-body2">{{ props.event.remark }}</div>
+    <q-menu touch-position v-if="props.event._id">
+      <q-list style="min-width: 100px">
+        <q-item clickable v-close-popup @click="router.push('/event/edit/' + props.event._id)">
+          <q-item-section>编辑事项</q-item-section>
+        </q-item>
+        <q-item clickable v-close-popup @click="del">
+          <q-item-section>删除事项</q-item-section>
+        </q-item>
+      </q-list>
+    </q-menu>
   </div>
-  <q-menu touch-position>
-    <q-list style="min-width: 100px">
-      <q-item clickable v-close-popup @click="router.push('/event/edit/' + props.event._id)">
-        <q-item-section>编辑事项</q-item-section>
-      </q-item>
-      <q-item clickable v-close-popup @click="del">
-        <q-item-section>删除事项</q-item-section>
-      </q-item>
-    </q-list>
-  </q-menu>
 </template>
 
 <script setup>

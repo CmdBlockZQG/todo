@@ -1,6 +1,6 @@
 <template>
   <div
-    class="q-pa-md shadow-4"
+    class="q-pa-sm shadow-4"
     style="border-radius: 8px; border-left: 8px solid;"
     :style="{ 'border-color': props.status ? colorMap[props.status] : '#bdbdbd' }"
   >
@@ -24,7 +24,7 @@
 import { defineProps } from 'vue'
 import { stringifyTime } from '../service/utils.js'
 
-const props = defineProps(['course', 'hour', 'status'])
+const props = defineProps(['course', 'status'])
 
 const colorMap = {
   'normal': '#bdbdbd',

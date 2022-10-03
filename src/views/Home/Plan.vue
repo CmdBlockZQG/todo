@@ -29,7 +29,7 @@
         </div>
         <div class="q-gutter-md">
           <div v-for="plan in activePlans">
-            <Plan :plan="plan" :status="'active'" @delete="init"></Plan>
+            <Plan :plan="plan" :status="'active'" @delete="init" :ts="now.getTime()"></Plan>
           </div>
         </div>
       </q-tab-panel>
@@ -41,7 +41,7 @@
         </div>
         <div class="q-gutter-md">
           <div v-for="plan in expiredPlans">
-            <Plan :plan="plan" :status="'expired'" @delete="init"></Plan>
+            <Plan :plan="plan" :status="'expired'" @delete="init" :ts="now.getTime()"></Plan>
           </div>
         </div>
       </q-tab-panel>
@@ -53,7 +53,7 @@
         </div>
         <div class="q-gutter-md">
           <div v-for="plan in futurePlans">
-            <Plan :plan="plan" :status="'normal'" @delete="init"></Plan>
+            <Plan :plan="plan" :status="'normal'" @delete="init" :ts="now.getTime()"></Plan>
           </div>
         </div>
       </q-tab-panel>

@@ -1,13 +1,27 @@
 import db from './db.js'
 
 export async function getTodayEvents(dayTs) {
-  return await db.getEventByDayRange(IDBKeyRange.only(dayTs))
+  let res = await db.getEventByDayRange(IDBKeyRange.only(dayTs))
+  res.sort((a, b) => a.end === b.end ? a.start - b.start : a.end - b.end)
+  return res
 }
 
 export async function getExpiredEvents(dayTs) {
-  return await db.getEventByDayRange(IDBKeyRange.upperBound(dayTs, true))
+  let all = await db.getEventByDayRange(IDBKeyRange.upperBound(dayTs, true))
+  let res = []
+  for (let i = 0; i < all.length; ++i) {
+    if (all[i].autoDel) {
+      await db.delOne('event', all[i]._id)
+    } else {
+      res.push(all[i])
+    }
+  }
+  res.sort((a, b) => a.end === b.end ? a.start - b.start : a.end - b.end)
+  return res
 }
 
 export async function getFutureEvents(dayTs) {
-  return await db.getEventByDayRange(IDBKeyRange.lowerBound(dayTs + 86400 * 1000, false))
+  let res = await db.getEventByDayRange(IDBKeyRange.lowerBound(dayTs + 86400 * 1000, false))
+  res.sort((a, b) => a.end === b.end ? a.start - b.start : a.end - b.end)
+  return res
 }

@@ -35,7 +35,7 @@
     <div v-if="tab === 'repeat'" class="q-pa-md q-gutter-md">
       <div v-for="event in events">
         <div
-          class="q-pa-md shadow-4"
+          class="q-pa-sm shadow-4"
           style="border-radius: 8px; border-left: 8px solid #1976d2;"
         >
           <div class="text-h5">
@@ -96,7 +96,6 @@ async function init() {
   await dailyUpdate()
   now.value = new Date()
   events.value = await getTodayEvents(today.value.getTime())
-  events.value.sort((a, b) => a.end === b.end ? a.start - b.start : a.end - b.end)
 }
 onMounted(init)
 document.addEventListener('visibilitychange', () => {
@@ -116,9 +115,8 @@ async function updateTab(tab) {
       break
     case 'repeat':
       events.value = await db.getAll('eventR')
-      return
+      break
   }
-  events.value.sort((a, b) => a.end === b.end ? a.start - b.start : a.end - b.end)
 }
 
 function getStatus(event) {
