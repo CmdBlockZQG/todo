@@ -12,7 +12,7 @@
     </div>
     <div class="text-body1">
       <q-icon name="schedule" />
-      {{ stringifyTime(props.course.startTs) }} - {{ stringifyTime(props.course.endTs) }}
+      {{ stringifyTime(props.course.startTs) }} — {{ stringifyTime(props.course.endTs) }}
       <q-icon name="place" />
       {{ props.course.place }}
     </div>

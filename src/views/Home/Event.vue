@@ -73,6 +73,7 @@ import { onMounted, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { Dialog } from 'quasar'
 import { getTodayEvents, getExpiredEvents, getFutureEvents } from '../../service/event.js'
+import { dailyUpdate } from '../../service/day.js'
 import db from '../../service/db.js'
 import Event from '../../components/Event.vue'
 
@@ -92,6 +93,7 @@ const typeMap = {
 }
 
 async function init() {
+  await dailyUpdate()
   now.value = new Date()
   events.value = await getTodayEvents(today.value.getTime())
   events.value.sort((a, b) => a.end === b.end ? a.start - b.start : a.end - b.end)
@@ -140,6 +142,7 @@ function delR(_id, hint) {
     cancel: true,
     persistent: true
   }).onOk(async () => {
+    await dailyUpdate()
     await db.delOne('eventR', _id)
     await updateTab(tab.value)
   })

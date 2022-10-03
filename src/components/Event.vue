@@ -9,7 +9,7 @@
     </div>
     <div class="text-body1">
       <q-icon name="schedule" />
-      {{ dateStr }} {{ stringifyTime(props.event.start) }} - {{ stringifyTime(props.event.end) }}
+      {{ dateStr }} {{ stringifyTime(props.event.start) }} — {{ stringifyTime(props.event.end) }}
       <q-icon name="auto_delete" v-show="props.event.autoDel" />
     </div>
     <div class="text-body2">{{ props.event.remark }}</div>

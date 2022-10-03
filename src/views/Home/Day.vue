@@ -26,6 +26,7 @@ import { useRouter } from 'vue-router'
 import { getCourses } from '../../service/course.js'
 import setting from '../../service/setting.js'
 import Course from '../../components/Course.vue'
+import { dailyUpdate } from '../../service/day.js'
 
 const router = useRouter()
 
@@ -44,6 +45,7 @@ const day = computed(() => {
 const courses = ref([])
 
 async function init(done) {
+  await dailyUpdate()
   now.value = new Date()
   termStart.value = new Date(await setting.get('termStart'))
   hour.value = await setting.get('hour')

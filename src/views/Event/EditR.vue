@@ -90,6 +90,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { Dialog, date } from 'quasar'
 import db from '../../service/db.js'
 import { numberifyTime, stringifyTime } from '../../service/utils.js'
+import { dailyUpdate } from '../../service/day.js'
 
 const router = useRouter()
 const route = useRoute()
@@ -181,6 +182,7 @@ async function submit() {
     doc.startDay = new Date(event.value.startDay).getTime()
     doc.cycle = event.value.cycle
   }
+  await dailyUpdate()
   await db.putOne('eventR', doc)
   router.back()
 }
