@@ -13,7 +13,7 @@ export default defineConfig({
         description: '一个自制的Todo应用',
         theme_color: '#1976d2',
         background_color: '#ffffff',
-        display: 'fullscreen',
+        display: 'standalone',
         icons: [
           {
             src: 'icons/32x32.png',
