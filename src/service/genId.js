@@ -1,4 +1,4 @@
-const seqMax = 1 << 12
+const seqMax = 1 << 15
 let seq = 0
 let ts = 0
 
@@ -17,5 +17,13 @@ export default () => {
     seq = 0
   }
   ts = now
-  return ((BigInt(ts) << 12n) + BigInt(seq)).toString(36)
+  let seqStr = seq.toString(36)
+  while (seqStr.length < 3) {
+    seqStr = '0' + seqStr
+  }
+  let tsStr = ts.toString(36)
+  while (tsStr.length < 9) {
+    tsStr = '0' + tsStr
+  }
+  return tsStr + seqStr
 }
