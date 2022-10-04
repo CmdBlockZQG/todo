@@ -5,21 +5,18 @@ export async function dailyUpdate() {
   const lastUpdateTs = await setting.get('lastUpdate')
   const todayTs = new Date(new Date().toLocaleDateString()).getTime()
   if (lastUpdateTs === todayTs) return
+  await setting.set('lastUpdate', todayTs)
 
-  const now = new Date()
-  const today = new Date(todayTs)
-  const termStart = new Date(await setting.get('termStart'))
-  const week = 1 + Math.floor((today.getTime() - termStart.getTime()) / (7 * 86400 * 1000))
-  const day = now.getDay() ? now.getDay() : 7
-
+  const termStart = await setting.get('termStart')
   const eventR = await db.getAll('eventR')
-
   let res = []
   for (let ts = lastUpdateTs + 86400 * 1000; ts <= todayTs; ts += 86400 * 1000) {
+    const week = 1 + Math.floor((ts - termStart) / (7 * 86400 * 1000))
+    const day = new Date(ts).getDay() || 7
+
     res = res.concat(await arrangeEvent(eventR, ts, week, day))
   }
   await db.comOp({}, { 'event': res })
-  await setting.set('lastUpdate', todayTs)
 }
 
 export async function arrangeEvent(eventR, dayTs, week, day) {

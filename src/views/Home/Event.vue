@@ -75,7 +75,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, onUnmounted, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { Dialog } from 'quasar'
 import { getAllEvents, getExpiredEvents, getFutureEvents } from '../../service/event.js'
@@ -105,10 +105,17 @@ async function init() {
   now.value = new Date()
   events.value = await getAllEvents(today.value.getTime())
 }
-onMounted(init)
-document.addEventListener('visibilitychange', () => {
+const onVisibilityChange = () => {
   if (document.visibilityState === 'visible') init()
+}
+onMounted(() => {
+  document.addEventListener('visibilitychange', onVisibilityChange)
+  init()
 })
+onUnmounted(() => {
+  document.removeEventListener('visibilitychange', onVisibilityChange)
+})
+
 
 async function updateTab(tab) {
   switch (tab) {

@@ -9,7 +9,7 @@
     </div>
     <div class="text-body1">
       <q-icon name="schedule" />
-      {{ dateStr }} {{ stringifyTime(props.event.start) }} — {{ stringifyTime(props.event.end) }}
+      {{ dateStr }} {{ stringifyTimeSEAP(props.event.start, props.event.end) }}
       <q-icon name="auto_delete" v-show="props.event.autoDel" />
     </div>
     <div class="text-body2">{{ props.event.remark }}</div>
@@ -31,7 +31,7 @@ import { defineProps, defineEmits, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { Dialog } from 'quasar'
 import db from '../service/db.js'
-import { stringifyTime } from '../service/utils.js'
+import { stringifyTimeSEAP } from '../service/utils.js'
 
 const emit = defineEmits(['delete'])
 const props = defineProps(['event', 'status', 'ts'])

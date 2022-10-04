@@ -26,7 +26,7 @@ export function stringifyTimeSEAP(ts1, ts2) {
   if (s1[0] === s2[0]) {
     return `${s1[0]}${s1.substring(1)}—${s2.substring(1)}`
   } else {
-    return `${s1} — ${s2}`
+    return `${s1}—${s2}`
   }
 }
 

@@ -39,7 +39,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getCourses } from '../../service/course.js'
 import setting from '../../service/setting.js'
@@ -112,11 +112,16 @@ async function init() {
   plans.value.sort((a, b) => a.end === b.end ? a.start - b.start : a.end - b.end)
 }
 
-document.addEventListener('visibilitychange', () => {
+const onVisibilityChange = () => {
   if (document.visibilityState === 'visible') init()
+}
+onMounted(() => {
+  document.addEventListener('visibilitychange', onVisibilityChange)
+  init()
 })
-
-onMounted(init)
+onUnmounted(() => {
+  document.removeEventListener('visibilitychange', onVisibilityChange)
+})
 
 </script>
 

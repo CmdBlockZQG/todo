@@ -62,7 +62,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, onUnmounted, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import db from '../../service/db.js'
 import Plan from '../../components/Plan.vue'
@@ -78,9 +78,16 @@ async function init() {
   plans.value = await db.getAll('plan')
   plans.value.sort((a, b) => a.end === b.end ? a.start - b.start : a.end - b.end)
 }
-onMounted(init)
-document.addEventListener('visibilitychange', () => {
+
+const onVisibilityChange = () => {
   if (document.visibilityState === 'visible') init()
+}
+onMounted(() => {
+  document.addEventListener('visibilitychange', onVisibilityChange)
+  init()
+})
+onUnmounted(() => {
+  document.removeEventListener('visibilitychange', onVisibilityChange)
 })
 
 const planStatus = computed(() => plans.value.map((x) => {
