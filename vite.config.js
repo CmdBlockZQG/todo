@@ -7,6 +7,7 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
+      includeAssets: ['assets/*.woff', 'assets/*.woff2'],
       manifest: {
         name: 'AlTodo',
         short_name: 'AlTodo',
