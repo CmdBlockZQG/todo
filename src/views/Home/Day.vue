@@ -12,10 +12,10 @@
 
   <q-page-container>
     <div class="q-pa-md q-gutter-md">
-      <div class="title">课程</div>
-      <Course v-for="(course, i) in courses" :course="course" :hour="hour" :status="courseStat[i]"></Course>
       <div class="title">事项</div>
       <Event v-for="(event, i) in events" :event="event" :status="eventStat[i]" @delete="init"></Event>
+      <div class="title">课程</div>
+      <Course v-for="(course, i) in courses" :course="course" :hour="hour" :status="courseStat[i]"></Course>
       <div class="title">计划</div>
       <Plan v-for="plan in activePlans" :plan="plan" :status="'active'" :ts="now.getTime()" @delete="init"></Plan>
     </div>
