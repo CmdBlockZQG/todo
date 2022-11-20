@@ -4,17 +4,23 @@
       <q-btn flat round icon="arrow_back" @click="router.back()" />
       <q-toolbar-title>浏览日程</q-toolbar-title>
     </q-toolbar>
-    <q-tabs v-model="tab" @update:model-value="updateTab">
-      <q-tab name="1" label="明天" />
-      <q-tab name="2" label="后天" />
-      <q-tab name="3" label="其他" @click="datePicker = true" />
-    </q-tabs>
   </q-header>
   <q-page-container>
     <div class="q-pa-md q-gutter-md">
-      <q-chip color="primary" text-color="white" icon="event" clickable @click="tab = '3'; datePicker = true;">
-        {{ today.getMonth() + 1 }}月{{ today.getDate() }}日 第{{ week }}周星期{{ dateMap[day] }}
-      </q-chip>
+      <div class="row justify-between">
+        <div class="col-1">
+          <q-btn @click="updateTab(-1)" outline round color="primary" icon="keyboard_arrow_left" size="sm" class="q-ma-xs" />
+        </div>
+        <div class="col-10 text-center">
+          <q-chip color="primary" text-color="white" clickable @click="tab = '3'; datePicker = true;">
+            {{ today.getMonth() + 1 }}月{{ today.getDate() }}日 第{{ week }}周星期{{ dateMap[day] }}
+            ({{ offset > 0 ? '+' : '' }}{{ offset }}d)
+          </q-chip>
+        </div>
+        <div class="col-1">
+          <q-btn @click="updateTab(1)" outline round color="primary" icon="keyboard_arrow_right" size="sm" class="q-ma-xs" />
+        </div>
+      </div>
       <div class="title">课程</div>
       <Course v-for="course in courses" :course="course"></Course>
       <template v-if="today.getTime() > realToday.getTime()">
@@ -48,7 +54,7 @@ const dateMap = ['？', '一', '二', '三', '四', '五', '六', '日']
 
 const realToday = new Date(new Date().toLocaleDateString())
 
-const tab = ref('1')
+const offset = ref(1)
 const today = ref(new Date(new Date(new Date().toLocaleDateString()).getTime() + 86400000))
 const termStart = ref(new Date())
 const hour = ref([])
@@ -82,9 +88,9 @@ onMounted(async () => {
   await update()
 })
 
-async function updateTab(tab) {
-  if (tab === '3') return
-  today.value = new Date(new Date(new Date().toLocaleDateString()).getTime() + 86400 * 1000 * Number(tab))
+async function updateTab(o) {
+  offset.value += o
+  today.value = new Date(new Date(new Date().toLocaleDateString()).getTime() + 86400 * 1000 * offset.value)
   await update()
 }
 
@@ -94,6 +100,7 @@ const dateProxy = ref(date.formatDate(Date.now(), 'YYYY/MM/DD'))
 async function pickDate() {
   datePicker.value = false
   today.value = new Date(dateProxy.value)
+  offset.value = (today.value.getTime() - new Date(new Date().toLocaleDateString()).getTime()) / (86400 * 1000)
   await update()
 }
 
