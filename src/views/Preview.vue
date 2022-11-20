@@ -12,7 +12,7 @@
           <q-btn @click="updateTab(-1)" outline round color="primary" icon="keyboard_arrow_left" size="sm" class="q-ma-xs" />
         </div>
         <div class="col-10 text-center">
-          <q-chip color="primary" text-color="white" clickable @click="tab = '3'; datePicker = true;">
+          <q-chip color="primary" text-color="white" clickable @click="dateProxy = date.formatDate(today.getTime(), 'YYYY/MM/DD'); datePicker = true;">
             {{ today.getMonth() + 1 }}月{{ today.getDate() }}日 第{{ week }}周星期{{ dateMap[day] }}
             ({{ offset > 0 ? '+' : '' }}{{ offset }}d)
           </q-chip>
