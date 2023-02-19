@@ -4,8 +4,8 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes: [
     {
-      path: '/home',
-      component: import('./views/Test.vue')
+      path: '/',
+      component: () => import('./views/Test.vue')
     }
   ]
 })
