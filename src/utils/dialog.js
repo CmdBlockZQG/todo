@@ -4,7 +4,7 @@ import mainApp from '../main.js'
 
 import Dialog from '../components/Dialog.vue'
 
-export default (title, text, onOk=() => {}, onCancel=() => {}) => {
+function createDialog(type, title, text, onOk, onCancel) {
   const container = document.createElement('div')
   document.body.appendChild(container)
 
@@ -13,6 +13,7 @@ export default (title, text, onOk=() => {}, onCancel=() => {}) => {
     setup: () => () => h(Dialog, {
       title: title,
       text: text,
+      type: type,
       onOk: () => { onOk(); destroy() },
       onCancel: () => { onCancel(); destroy() }
     })
@@ -25,9 +26,28 @@ export default (title, text, onOk=() => {}, onCancel=() => {}) => {
 
   app.mount(container)
 
-  
   function destroy() {
-    app.unmount(container)
-    container.remove()
+    setTimeout(() => {
+      app.unmount(container)
+      container.remove()
+    }, 500)
+  }
+}
+
+export default {
+  confirm(title, text, onOk=() => {}, onCancel=() => {}) {
+    createDialog('confirm', title, text, onOk, onCancel)
+  },
+  info(title, text, onOk=() => {}) {
+    createDialog('info', title, text, onOk, () => {})
+  },
+  warning(title, text, onOk=() => {}) {
+    createDialog('warning', title, text, onOk, () => {})
+  },
+  error(title, text, onOk=() => {}) {
+    createDialog('error', title, text, onOk, () => {})
+  },
+  success(title, text, onOk=() => {}) {
+    createDialog('success', title, text, onOk, () => {})
   }
 }

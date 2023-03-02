@@ -9,8 +9,24 @@ const router = createRouter({
       children: [
         {
           path: '/',
-          component: () => import('./views/Home/Today.vue')
-        }
+          component: () => import('./views/Home/Today.vue'),
+          meta: { navActive: 'today' }
+        },
+        {
+          path: '/work',
+          component: () => import('./views/Home/Work.vue'),
+          meta: { navActive: 'work' }
+        },
+        {
+          path: '/plan',
+          component: () => import('./views/Home/Plan.vue'),
+          meta: { navActive: 'plan' }
+        },
+        {
+          path: '/overview',
+          component: () => import('./views/Home/Overview.vue'),
+          meta: { navActive: 'overview' }
+        },
       ]
     },
     {

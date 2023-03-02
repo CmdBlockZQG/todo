@@ -5,6 +5,7 @@ import App from './App.vue'
 
 import 'vuetify/styles'
 import '@mdi/font/css/materialdesignicons.css'
+import colors from 'vuetify/lib/util/colors.mjs'
 import { createVuetify } from 'vuetify'
 
 const app = createApp(App)
@@ -18,9 +19,9 @@ app.use(createVuetify({
         colors: {
           background: '#FFFFFF',
           surface: '#FFFFFF',
-          primary: '#2962FF',
+          primary: '#2979FF',
           'primary-darken-1': '#0D47A1',
-          secondary: '#40C4FF',
+          secondary: '#0091EA',
           'secondary-darken-1': '#01579B',
           error: '#B00020',
           info: '#2196F3',
