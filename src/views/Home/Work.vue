@@ -6,7 +6,7 @@
     </template>
   </v-app-bar>
   <v-main>
-    <div class="overflow-hidden bg-grey-lighten-3 pb-16 h-100">
+    <div v-if="dragRefresh" id="drag-container" class="overflow-hidden bg-grey-lighten-3 pb-16 h-100">
       <v-sheet v-for="(work, index) in works" v-ripple class="mt-2 pa-3" @click="openOptDialog(index)">
         <div class="text-h5">{{ work.title }}</div>
         <div>{{ work.content }}</div>
@@ -84,7 +84,8 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
+import { smoothDnD } from 'smooth-dnd'
 import time from '../../utils/time.js'
 import dialog from '../../utils/dialog.js'
 
@@ -97,6 +98,35 @@ if (LS.work) {
 } else {
   LS.work = '[]'
 }
+
+const dragRefresh = ref(true)
+
+function bindDrag() {
+  const dragContainerElem = document.getElementById('drag-container')
+  const dragContainer = smoothDnD(dragContainerElem, {
+    lockAxis: "y",
+    onDrop: (dropResult) => {
+      const x = dropResult.removedIndex,
+            y = dropResult.addedIndex
+      if (x === y) return
+      const cur = works.value.splice(x, 1)[0]
+      works.value.splice(y, 0, cur)
+      LS.work = JSON.stringify(works.value)
+      dragContainer.dispose()
+      dragRefresh.value = false
+      nextTick(() => {
+        dragRefresh.value = true
+        nextTick(() => {
+          bindDrag()
+        })
+      })
+    }
+  })
+}
+
+onMounted(() => {
+  bindDrag()
+})
 
 const addDialogOpen = ref(false)
 const addDialog = ref({ title: '', content: '' })
