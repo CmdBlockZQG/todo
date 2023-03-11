@@ -26,8 +26,16 @@ const router = createRouter({
           path: '/overview',
           component: () => import('./views/Home/Overview.vue'),
           meta: { navActive: 'overview' }
-        },
+        }
       ]
+    },
+    {
+      path: '/setting',
+      component: () => import('./views/Setting/Setting.vue'),
+    },
+    {
+      path: '/setting/course',
+      component: () => import('./views/Setting/Course.vue'),
     },
     {
       path: '/test',

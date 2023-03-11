@@ -2,7 +2,7 @@
   <v-app-bar density="compact">
     <v-app-bar-title>作业</v-app-bar-title>
     <template v-slot:append>
-      <v-btn icon="mdi-cog-outline"></v-btn>
+      <v-btn icon="mdi-cog-outline" @click="router.push('/setting')"></v-btn>
     </template>
   </v-app-bar>
   <v-main>
@@ -85,10 +85,12 @@
 
 <script setup>
 import { ref, computed, onMounted, nextTick } from 'vue'
+import { useRouter } from 'vue-router'
 import { smoothDnD } from 'smooth-dnd'
 import time from '../../utils/time.js'
 import dialog from '../../utils/dialog.js'
 
+const router = useRouter()
 const LS = window.localStorage
 
 const works = ref([])
