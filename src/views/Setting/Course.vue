@@ -5,11 +5,38 @@
     </template>
     <v-app-bar-title>编辑课程安排</v-app-bar-title>
     <template v-slot:append>
-      <v-btn icon="mdi-plus" @click="addCourse"></v-btn>
+
+
+      <v-menu>
+        <template v-slot:activator="{ props }">
+          <v-btn icon="mdi-dots-vertical" v-bind="props"></v-btn>
+        </template>
+        <v-list>
+          <v-list-item link @click="clearCourse">
+            <v-list-item-title style="line-height: 20px;">
+              <v-icon icon="mdi-close" size="small"></v-icon>
+              <span> 清空课程数据</span>
+            </v-list-item-title>
+          </v-list-item>
+          <v-list-item link @click="exportCourse">
+            <v-list-item-title style="line-height: 20px;">
+              <v-icon icon="mdi-export" size="small"></v-icon>
+              <span> 导出课程数据</span>
+            </v-list-item-title>
+          </v-list-item>
+          <v-list-item link @click="importCourse">
+            <v-list-item-title style="line-height: 20px;">
+              <v-icon icon="mdi-import" size="small"></v-icon>
+              <span> 导入课程数据</span>
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+
     </template>
   </v-app-bar>
   <v-main>
-    <div class="overflow-hidden bg-grey-lighten-3 pb-16 h-100">
+    <div class="overflow-hidden bg-grey-lighten-3 h-100" style="padding-bottom: 96px">
       <v-sheet v-for="(course, index) in courses" class="mt-2">
         <div class="pa-3">
           <div class="text-h5">{{ course.title }}</div>
@@ -47,6 +74,16 @@
     </div>
   </v-main>
 
+  <div class="float-btn">
+    <v-btn
+      icon="mdi-plus"
+      size="x-large"
+      color="primary"
+      class="elevation-8"
+      @click="addCourse"
+    ></v-btn>
+  </div>
+
   <v-dialog
     v-model="dialogOpen"
     width="400"
@@ -67,6 +104,24 @@
         <v-btn color="primary" @click="showHelp">查看格式说明</v-btn>
         <v-btn color="primary" @click="dialogOpen = false">取消</v-btn>
         <v-btn color="primary" variant="flat" @click="dialogConfirm">确认</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+  <v-dialog
+    v-model="dataDialogOpen"
+    width="400"
+  >
+    <v-card>
+      <v-card-title><span class="text-h5">{{ dataDialogMode ? '导出' : '导入' }}</span></v-card-title>
+      <v-card-text>
+        <p v-if="!dataDialogMode">请注意 全部原有课程信息将被覆盖</p>
+        <v-textarea v-model="dataProxy" :readonly="dataDialogMode"></v-textarea>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn v-if="!dataDialogMode" color="primary" @click="dataDialogOpen = false">取消</v-btn>
+        <v-btn color="primary" variant="flat" @click="dataDialogConfirm">确认</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -186,6 +241,49 @@ function dialogConfirm() {
   LS.course = JSON.stringify(courseIdList.value)
   dialogOpen.value = false
 }
+function clearCourse() {
+  dialog.confirm('确认清除全部课程？', '删除后将无法恢复', () => {
+    while (courseIdList.value.length) {
+      opDelCourse(0)
+    }
+  })
+}
+const dataDialogOpen = ref(false)
+const dataDialogMode = ref(false) // false:导入 true:导出
+const dataProxy = ref('')
+function exportCourse() {
+  const res = {}
+  res.course = LS.course
+  for (let i = 0; i < courseIdList.value.length; ++i) {
+    res[courseIdList.value[i]] = LS[courseIdList.value[i]]
+    for (const j of courses.value[i].arrId) {
+      res[j] = LS[j]
+    }
+  }
+  dataDialogMode.value = true
+  dataProxy.value = JSON.stringify(res)
+  dataDialogOpen.value = true
+}
+function importCourse() {
+  dataDialogMode.value = false
+  dataProxy.value = ''
+  dataDialogOpen.value = true
+}
+function dataDialogConfirm() {
+  if (dataDialogMode.value) {
+    dataDialogOpen.value = false
+    return
+  }
+  while (courseIdList.value.length) {
+    opDelCourse(0)
+  }
+  const obj = JSON.parse(dataProxy.value)
+  for (const key in obj) {
+    LS[key] = obj[key]
+  }
+  courseIdList.value = JSON.parse(LS.course)
+  dataDialogOpen.value = false
+}
 </script>
 
 <style scoped>
@@ -201,5 +299,10 @@ th {
   font-weight: 500;
   border-bottom: thin solid #e0e0e0;
   border-spacing: 0;
+}
+.float-btn {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
 }
 </style>

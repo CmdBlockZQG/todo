@@ -32,6 +32,19 @@
           <span class="text-caption">{{ time.dateTsToStr(orig) }}</span>
         </template>
       </v-list-item>
+      <v-list-subheader>数据</v-list-subheader>
+      <v-list-item link @click="">
+        <template v-slot:prepend>
+          <v-icon icon="mdi-export"></v-icon>
+        </template>
+        <v-list-item-title>导出</v-list-item-title>
+      </v-list-item>
+      <v-list-item link @click="">
+        <template v-slot:prepend>
+          <v-icon icon="mdi-import"></v-icon>
+        </template>
+        <v-list-item-title>导入</v-list-item-title>
+      </v-list-item>
     </v-list>
   </v-main>
 
