@@ -11,7 +11,7 @@ export default {
       l = i
     }
     if (l + 1 === lis.length) res.push(lis[l])
-    else res.push(`${lis[l]}-${lis[lis.l,ength - 1]}`)
+    else res.push(`${lis[l]}-${lis[lis.length - 1]}`)
     return res.join(',')
   },
   parse(str) { // 将序列字符串（如3,4-5,6）转换为数组

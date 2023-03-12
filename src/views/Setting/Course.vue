@@ -10,10 +10,39 @@
   </v-app-bar>
   <v-main>
     <div class="overflow-hidden bg-grey-lighten-3 pb-16 h-100">
-      <v-sheet class="mt-2 pa-3">
-        <div class="text-h5">高等数学BⅡ</div>
-        <div>这是关于高等数学BⅡ的一些备注</div>
-        <div class="text-caption text-disabled">123123</div>
+      <v-sheet v-for="(course, index) in courses" class="mt-2">
+        <div class="pa-3">
+          <div class="text-h5">{{ course.title }}</div>
+          <div>{{ course.remark }}</div>
+        </div>
+        <v-divider></v-divider>
+        <div class="pa-1">
+          <table>
+            <thead>
+              <tr>
+                <th>教学周</th>
+                <th>星期</th>
+                <th>小节课</th>
+                <th>地点</th>
+                <th>备注</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="arr in course.arr">
+                <td>{{ range.stringify(arr.week) }}</td>
+                <td>{{ arr.day }}</td>
+                <td>{{ arr.hour.join('-') }}</td>
+                <td>{{ arr.place }}</td>
+                <td>{{ arr.remark }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <v-divider></v-divider>
+        <div class="py-1 px-3 text-right">
+          <v-btn color="error" variant="text" @click="delCourse(index)">删除</v-btn>
+          <v-btn color="primary" variant="text" @click="editCourse(index)">编辑</v-btn>
+        </div>
       </v-sheet>
     </div>
   </v-main>
@@ -23,7 +52,7 @@
     width="400"
   >
     <v-card>
-      <v-card-title><span class="text-h5">{{ curCourseId ? '修改' : '新建' }}课程</span></v-card-title>
+      <v-card-title><span class="text-h5">{{ curCourseIndex === -1 ? '新建' : '修改' }}课程</span></v-card-title>
       <v-card-text>
         <v-text-field label="课程名" v-model="editProxy.title"></v-text-field>
         <v-text-field label="备注" v-model="editProxy.remark"></v-text-field>
@@ -58,8 +87,10 @@ const courseIdList = ref(JSON.parse(LS.course))
 const courses = computed(() => {
   const res = courseIdList.value.map((id) => JSON.parse(LS[id]))
   for (const c of res) {
+    c.arrId = c.arr
     c.arr = c.arr.map((id) => JSON.parse(LS[id]))
   }
+  return res
 })
 
 function showHelp() {
@@ -76,7 +107,7 @@ function showHelp() {
 没做容错，请自行核对格式`)
 }
 
-const curCourseId = ref('')
+const curCourseIndex = ref(-1)
 const dialogOpen = ref(false)
 const editProxy = ref({
   title: '',
@@ -88,14 +119,52 @@ function addCourse() {
   editProxy.value.remark = ''
   editProxy.value.arrange = ''
 
-  curCourseId.value = ''
+  curCourseIndex.value = -1
   dialogOpen.value = true
 }
+function editCourse(index) {
+  editProxy.value.title = courses.value[index].title
+  editProxy.value.remark = courses.value[index].remark
+  let arrange = ''
+  for (let arr of courses.value[index].arr) {
+    arrange += `${range.stringify(arr.week)} ${arr.day} ${arr.hour.join('-')} ${arr.place} ${arr.remark}\n`
+  }
+  editProxy.value.arrange = arrange
+  curCourseIndex.value = index
+  dialogOpen.value = true
+}
+function delCourse(index) {
+  dialog.confirm('确认删除？', `确定要删除课程<b>${courses.value[index].title}</b>吗？`, () => {
+    opDelCourse(index)
+  })
+}
+function opDelCourse(index) {
+  for (const arrId of courses.value[index].arrId) {
+    delete LS[arrId]
+  }
+  delete LS[courseIdList.value[index]]
+  courseIdList.value.splice(index, 1)
+  LS.course = JSON.stringify(courseIdList.value)
+}
 function dialogConfirm() {
+  if (curCourseIndex.value !== -1) {
+    opDelCourse(curCourseIndex.value)
+  }
   const courseId = genId()
   const arrIdList = []
   for (const line of editProxy.value.arrange.split('\n')) {
-    const a = line.split(' ')
+    const a = []
+    let i = 0
+    while (i < line.length && a.length < 4) {
+      let j = line.indexOf(' ', i)
+      if (j === -1) {
+        a.push(line.slice(i))
+        i = line.length
+        break
+      }
+      a.push(line.slice(i, j))
+      i = j + 1
+    }
     if (a.length < 4) continue
     const arrId = genId()
     arrIdList.push(arrId)
@@ -105,7 +174,7 @@ function dialogConfirm() {
       day: Number(a[1]),
       hour: range.pair(a[2]),
       place: a[3],
-      remark: a[4] || ''
+      remark: line.slice(i)
     })
   }
   LS[courseId] = JSON.stringify({
@@ -113,6 +182,24 @@ function dialogConfirm() {
     remark: editProxy.value.remark,
     arr: arrIdList
   })
+  courseIdList.value.unshift(courseId)
+  LS.course = JSON.stringify(courseIdList.value)
+  dialogOpen.value = false
 }
-
 </script>
+
+<style scoped>
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 2px 8px;
+}
+th {
+  text-align: left;
+  font-weight: 500;
+  border-bottom: thin solid #e0e0e0;
+  border-spacing: 0;
+}
+</style>
