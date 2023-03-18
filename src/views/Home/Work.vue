@@ -6,7 +6,7 @@
     </template>
   </v-app-bar>
   <v-main>
-    <div v-if="dragRefresh" id="drag-container" class="overflow-hidden bg-grey-lighten-3 pb-16 h-100">
+    <div v-if="dragRefresh" id="drag-container" class="overflow-hidden bg-grey-lighten-3 h-100" style="padding-bottom: 96px">
       <v-sheet v-for="(work, index) in works" v-ripple class="mt-2 pa-3" @click="openOptDialog(index)">
         <div class="text-h5">{{ work.title }}</div>
         <div>{{ work.content }}</div>

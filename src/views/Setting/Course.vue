@@ -147,6 +147,7 @@ const courses = computed(() => {
   }
   return res
 })
+const arrangeIdList = computed(() => courses.value.reduce((t, c) => t.concat(c.arrId), []))
 
 function showHelp() {
   dialog.info('课程安排格式说明', `每行一个课程安排，依次由教学周、星期、小节课、地点、备注（可空）组成，中间空格隔开。<br><br>
@@ -200,6 +201,7 @@ function opDelCourse(index) {
   delete LS[courseIdList.value[index]]
   courseIdList.value.splice(index, 1)
   LS.course = JSON.stringify(courseIdList.value)
+  LS.arr = JSON.stringify(arrangeIdList.value)
 }
 function dialogConfirm() {
   if (curCourseIndex.value !== -1) {
@@ -239,6 +241,7 @@ function dialogConfirm() {
   })
   courseIdList.value.unshift(courseId)
   LS.course = JSON.stringify(courseIdList.value)
+  LS.arr = JSON.stringify(arrangeIdList.value)
   dialogOpen.value = false
 }
 function clearCourse() {
@@ -254,6 +257,7 @@ const dataProxy = ref('')
 function exportCourse() {
   const res = {}
   res.course = LS.course
+  res.arr = LS.arr
   for (let i = 0; i < courseIdList.value.length; ++i) {
     res[courseIdList.value[i]] = LS[courseIdList.value[i]]
     for (const j of courses.value[i].arrId) {

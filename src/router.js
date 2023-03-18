@@ -20,7 +20,24 @@ const router = createRouter({
         {
           path: '/plan',
           component: () => import('./views/Home/Plan.vue'),
-          meta: { navActive: 'plan' }
+          meta: { navActive: 'plan' },
+          children: [
+            {
+              path: '/plan',
+              component: () => import('./views/Plan/Plan.vue'),
+              meta: { tabActive: 'plan' }
+            },
+            {
+              path: 'event',
+              component: () => import('./views/Plan/Event.vue'),
+              meta: { tabActive: 'event' }
+            },
+            {
+              path: 'routine',
+              component: () => import('./views/Plan/Routine.vue'),
+              meta: { tabActive: 'routine' }
+            },
+          ]
         },
         {
           path: '/overview',
