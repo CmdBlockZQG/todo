@@ -1,6 +1,7 @@
 export default {
   ts: () => Math.floor(new Date().getTime() / 1000),
-  desc(ts) {
+  today: () => new Date(new Date().toLocaleDateString()).getTime() / 1000,
+  desc(ts, time=true) { // 将某一天的时间戳转换为描述该日期的字符串
     const dayDesc = (dDay) => {
       const map = {
         '-2': '后天',
@@ -10,18 +11,36 @@ export default {
         '2': '前天'
       }
       if (map[dDay]) return map[dDay]
-      if (dDay > 0) return `${dDay}天前`
-      return `${-dDay}天后`
+      const ba = dDay > 0 ? '前' : '后'
+      dDay = Math.abs(dDay)
+      if (dDay > 30) {
+        const dMo = Math.floor(dDay / 30)
+        return `${dMo}月${ba}`
+      } else {
+        return `${dDay}天${ba}`
+      }
     }
     const todayTs = new Date(new Date().toLocaleDateString()).getTime() / 1000
     const dayTs = new Date(new Date(ts * 1000).toLocaleDateString()).getTime() / 1000
     const dDay = (todayTs - dayTs) / 86400
-    const h = Math.floor((ts - dayTs) / 3600)
-    const m = Math.floor((ts - dayTs) % 3600 / 60)
-    return `${dayDesc(dDay)} ${h}:${m < 10 ? '0' + m : m}`
+    if (Math.abs(dDay) <= 2 && time) {
+      const h = Math.floor((ts - dayTs) / 3600)
+      const m = Math.floor((ts - dayTs) % 3600 / 60)
+      return `${dayDesc(dDay)} ${h}:${m < 10 ? '0' + m : m}`
+    } else {
+      return dayDesc(dDay)
+    }
   },
   dateStrToTs(dateStr) { // 将形如2023-2-13或2023/2/13的日期字符串转为时间戳
     return new Date(dateStr).getTime() / 1000
+  },
+  dateTsToObj(dateTs) { // 将某一天的时间戳转换为日期对象
+    const timeObj = new Date(dateTs * 1000)
+    return {
+      year: timeObj.getFullYear(),
+      month: timeObj.getMonth() + 1,
+      day: timeObj.getDate()
+    }
   },
   dateTsToStr(dateTs, sep='-') { // 将某一天的时间戳转换为日期字符串，如2023-2-13，可自定义分隔符
     const timeObj = new Date(dateTs * 1000)
@@ -29,6 +48,22 @@ export default {
       m = timeObj.getMonth() + 1,
       d = timeObj.getDate()
     return `${y}${sep}${m}${sep}${d}`
+  },
+  dateTsToWeekdayStr(ts) { // 将某一天的时间戳转换为形如`第1周星期一`的字符串
+    const d = ts - Number(window.localStorage.orig)
+    const week = Math.floor(d / (86400 * 7)) + 1
+    const day = Math.floor((d % (7 * 86400)) / 86400) + 1
+    const dayMap = ['', '一', '二', '三', '四', '五', '六', '日']
+    return `第${week}周星期${dayMap[day]}`
+  },
+  dateTsToWeekdayObj(ts) { // 将某一天的时间戳转换为教学周星期对象
+    const d = ts - Number(window.localStorage.orig)
+    const week = Math.floor(d / (86400 * 7)) + 1
+    const day = Math.floor((d % (7 * 86400)) / 86400) + 1
+    return {
+      week,
+      day
+    }
   },
   timeStrToTs(timeStr) { // 将形如08:30的时刻字符串转为时间戳
     const t = timeStr.split(':')

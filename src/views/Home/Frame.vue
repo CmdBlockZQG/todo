@@ -27,10 +27,10 @@ import { useRouter, useRoute } from 'vue-router'
 const router = useRouter()
 const route = useRoute()
 
-const tabSelect = ref(route.meta.navActive)
+const tabSelect = ref(route.meta.nav)
 
 watch(
-  () => route.meta.navActive,
+  () => route.meta.nav,
   tab => tabSelect.value = tab
 )
 

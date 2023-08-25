@@ -5,8 +5,6 @@
     </template>
     <v-app-bar-title>编辑课程安排</v-app-bar-title>
     <template v-slot:append>
-
-
       <v-menu>
         <template v-slot:activator="{ props }">
           <v-btn icon="mdi-dots-vertical" v-bind="props"></v-btn>

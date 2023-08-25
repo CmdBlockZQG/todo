@@ -3,12 +3,14 @@
     <v-dialog width="auto" persistent v-model="show">
       <v-card style="min-width: 300px">
         <v-card-title class="text-h5">
-          <v-icon size="small" color="info" v-if="props.type === 'confirm'">mdi-help-circle-outline</v-icon>
-          <v-icon size="small" color="info" v-if="props.type === 'info'">mdi-information-outline</v-icon>
-          <v-icon size="small" color="warning" v-if="props.type === 'warning'">mdi-alert-circle-outline</v-icon>
-          <v-icon size="small" color="error" v-if="props.type === 'error'">mdi-close-circle-outline</v-icon>
-          <v-icon size="small" color="success" v-if="props.type === 'success'">mdi-check-circle-outline</v-icon>
-          {{ props.title }}
+          <div class="d-flex align-center">
+            <v-icon size="small" color="info" v-if="props.type === 'confirm'">mdi-help-circle-outline</v-icon>
+            <v-icon size="small" color="info" v-if="props.type === 'info'">mdi-information-outline</v-icon>
+            <v-icon size="small" color="warning" v-if="props.type === 'warning'">mdi-alert-circle-outline</v-icon>
+            <v-icon size="small" color="error" v-if="props.type === 'error'">mdi-close-circle-outline</v-icon>
+            <v-icon size="small" color="success" v-if="props.type === 'success'">mdi-check-circle-outline</v-icon>
+            {{ props.title }}
+          </div>
         </v-card-title>
         <v-card-text v-html="props.text"></v-card-text>
         <v-card-actions>

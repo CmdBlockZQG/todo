@@ -8,7 +8,7 @@
     -->
 
     <template v-slot:extension>
-      <v-tabs v-model="tabSelect" grow>
+      <v-tabs v-model="tabSelect" grow color="primary">
         <v-tab value="plan" @click="router.replace('/plan')">事项</v-tab>
         <v-tab value="event" @click="router.replace('/plan/event')">时点</v-tab>
         <v-tab value="routine" @click="router.replace('/plan/routine')">日常</v-tab>
@@ -28,9 +28,9 @@ import { useRouter, useRoute } from 'vue-router'
 const router = useRouter()
 const route = useRoute()
 
-const tabSelect = ref(route.meta.tabActive)
+const tabSelect = ref(route.meta.tab)
 watch(
-  () => route.meta.tabActive,
+  () => route.meta.tab,
   tab => tabSelect.value = tab
 )
 </script>

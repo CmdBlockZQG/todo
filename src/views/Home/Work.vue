@@ -6,7 +6,7 @@
     </template>
   </v-app-bar>
   <v-main>
-    <div v-if="dragRefresh" id="drag-container" class="overflow-hidden bg-grey-lighten-3 h-100" style="padding-bottom: 96px">
+    <div v-if="dragRefresher" id="drag-container" class="overflow-hidden bg-grey-lighten-3 h-100" style="padding-bottom: 96px">
       <v-sheet v-for="(work, index) in works" v-ripple class="mt-2 pa-3" @click="openOptDialog(index)">
         <div class="text-h5">{{ work.title }}</div>
         <div>{{ work.content }}</div>
@@ -101,27 +101,32 @@ if (LS.work) {
   LS.work = '[]'
 }
 
-const dragRefresh = ref(true)
+const dragRefresher = ref(true)
+let dragContainer = null
+
+function refreshDrag() {
+  dragContainer.dispose()
+  dragRefresher.value = false
+  nextTick(() => {
+    dragRefresher.value = true
+    nextTick(() => {
+      bindDrag()
+    })
+  })
+}
 
 function bindDrag() {
   const dragContainerElem = document.getElementById('drag-container')
-  const dragContainer = smoothDnD(dragContainerElem, {
+  dragContainer = smoothDnD(dragContainerElem, {
     lockAxis: "y",
     onDrop: (dropResult) => {
       const x = dropResult.removedIndex,
-            y = dropResult.addedIndex
+        y = dropResult.addedIndex
       if (x === y) return
       const cur = works.value.splice(x, 1)[0]
       works.value.splice(y, 0, cur)
       LS.work = JSON.stringify(works.value)
-      dragContainer.dispose()
-      dragRefresh.value = false
-      nextTick(() => {
-        dragRefresh.value = true
-        nextTick(() => {
-          bindDrag()
-        })
-      })
+      refreshDrag()
     }
   })
 }
@@ -145,6 +150,7 @@ function confirmAddDialog() {
   })
   LS.work = JSON.stringify(works.value)
   addDialogOpen.value = false
+  refreshDrag()
 }
 
 const curWorkIndex = ref(0)
@@ -160,6 +166,7 @@ function delWork() {
   dialog.confirm('删除作业', `确认删除<b>${curWork.value.title}</b>吗？`, () => {
     works.value.splice(curWorkIndex.value, 1)
     LS.work = JSON.stringify(works.value)
+    refreshDrag()
   })
 }
 

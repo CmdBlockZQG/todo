@@ -10,39 +10,39 @@ const router = createRouter({
         {
           path: '/',
           component: () => import('./views/Home/Today.vue'),
-          meta: { navActive: 'today' }
+          meta: { nav: 'today' }
         },
         {
           path: '/work',
           component: () => import('./views/Home/Work.vue'),
-          meta: { navActive: 'work' }
+          meta: { nav: 'work' }
         },
         {
           path: '/plan',
           component: () => import('./views/Home/Plan.vue'),
-          meta: { navActive: 'plan' },
+          meta: { nav: 'plan' },
           children: [
             {
               path: '/plan',
               component: () => import('./views/Plan/Plan.vue'),
-              meta: { tabActive: 'plan' }
+              meta: { tab: 'plan' }
             },
             {
               path: 'event',
               component: () => import('./views/Plan/Event.vue'),
-              meta: { tabActive: 'event' }
+              meta: { tab: 'event' }
             },
             {
               path: 'routine',
               component: () => import('./views/Plan/Routine.vue'),
-              meta: { tabActive: 'routine' }
+              meta: { tab: 'routine' }
             },
           ]
         },
         {
           path: '/overview',
           component: () => import('./views/Home/Overview.vue'),
-          meta: { navActive: 'overview' }
+          meta: { nav: 'overview' }
         }
       ]
     },
