@@ -115,7 +115,7 @@ const props = defineProps(['modelValue'])
 const emit = defineEmits(['update:modelValue'])
 
 const desc = computed(() => time.desc(props.modelValue, false))
-const date = computed(() => time.dateTsToStr(props.modelValue))
+const date = computed(() => time.dateTsToStr(props.modelValue, '-', false))
 const weekday = computed(() => time.dateTsToWeekdayStr(props.modelValue))
 
 const dialogShow = ref(false)

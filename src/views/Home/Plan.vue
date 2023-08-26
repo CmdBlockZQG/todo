@@ -10,7 +10,7 @@
     <template v-slot:extension>
       <v-tabs v-model="tabSelect" grow color="primary">
         <v-tab value="plan" @click="router.replace('/plan')">事项</v-tab>
-        <v-tab value="event" @click="router.replace('/plan/event')">时点</v-tab>
+        <v-tab value="event" @click="router.replace('/plan/event')">事件</v-tab>
         <v-tab value="routine" @click="router.replace('/plan/routine')">日常</v-tab>
       </v-tabs>
     </template>

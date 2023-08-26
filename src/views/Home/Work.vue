@@ -52,7 +52,7 @@
       <v-card-title><span class="text-h5">{{ curWork.title }}</span></v-card-title>
       <v-card-text>
         {{ curWork.content }}
-        <div class="text-caption text-disabled mt-1">{{ time.desc(curWork.time) }}</div>
+        <div class="text-caption text-disabled mt-1">{{ new Date(curWork.time * 1000).toLocaleString().replace(/\//g, '-') }}</div>
       </v-card-text>
       <div class="pa-2">
         <v-btn block variant="text" @click="openEditDialog">编辑</v-btn>

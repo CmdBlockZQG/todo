@@ -1,6 +1,11 @@
+const ts = () => Math.floor(new Date().getTime() / 1000)
+const today = () => new Date(new Date().toLocaleDateString()).getTime() / 1000
+const curTime = () => ts() - today()
+
 export default {
-  ts: () => Math.floor(new Date().getTime() / 1000),
-  today: () => new Date(new Date().toLocaleDateString()).getTime() / 1000,
+  ts,
+  today,
+  curTime,
   desc(ts, time=true) { // 将某一天的时间戳转换为描述该日期的字符串
     const dayDesc = (dDay) => {
       const map = {
@@ -42,12 +47,12 @@ export default {
       day: timeObj.getDate()
     }
   },
-  dateTsToStr(dateTs, sep='-') { // 将某一天的时间戳转换为日期字符串，如2023-2-13，可自定义分隔符
+  dateTsToStr(dateTs, sep='-', year=true) { // 将某一天的时间戳转换为日期字符串，如2023-2-13，可自定义分隔符
     const timeObj = new Date(dateTs * 1000)
     const y = timeObj.getFullYear(),
       m = timeObj.getMonth() + 1,
       d = timeObj.getDate()
-    return `${y}${sep}${m}${sep}${d}`
+    return year ? `${y}${sep}${m}${sep}${d}` : `${m}${sep}${d}`
   },
   dateTsToWeekdayStr(ts) { // 将某一天的时间戳转换为形如`第1周星期一`的字符串
     const d = ts - Number(window.localStorage.orig)

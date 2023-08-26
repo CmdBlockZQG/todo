@@ -6,6 +6,8 @@ export default () => {
   LS.period = '[[1,2],[3,5],[6,7],[8,9],[10,12]]'
   LS.course = '[]'
   LS.arr = '[]'
+  LS.work = '[]'
   LS.plan = '[]'
+  LS.event = '[]'
   window.location.reload()
 }

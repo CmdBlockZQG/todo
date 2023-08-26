@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-  import { ref, defineProps } from 'vue'
+  import { ref } from 'vue'
   const props = defineProps(['title', 'text', 'type'])
   const show = ref(true)
 </script>
