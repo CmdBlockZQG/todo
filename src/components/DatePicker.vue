@@ -108,7 +108,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, computed, ref } from 'vue'
+import { computed, ref } from 'vue'
 import time from '../utils/time.js'
 
 const props = defineProps(['modelValue'])

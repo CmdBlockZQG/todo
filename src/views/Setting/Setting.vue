@@ -23,6 +23,12 @@
           <v-icon icon="mdi-clock-outline"></v-icon>
         </template>
       </v-list-item>
+      <v-list-item link @click="openEditPeriodDialog">
+        <v-list-item-title>大节课时间范围</v-list-item-title>
+        <template v-slot:prepend>
+          <v-icon icon="mdi-timelapse"></v-icon>
+        </template>
+      </v-list-item>
       <v-list-item link @click="openEditOrigDialog">
         <v-list-item-title>第一教学周周一日期</v-list-item-title>
         <template v-slot:prepend>
@@ -94,6 +100,29 @@
     </v-card>
   </v-dialog>
 
+  <!-- 编辑大节课时间范围Dialog -->
+  <v-dialog
+    v-model="editPeriodOpen"
+    width="400"
+  >
+    <v-card>
+      <v-card-title><span class="text-h5">编辑大节课时间范围</span></v-card-title>
+      <v-card-text>
+        <v-textarea
+          label="大节课时间范围"
+          v-model="editPeriodProxy"
+          hint="一行表示一大节课，包含两个空格隔开的数字，表示这个大节课包含的第一节和最后一节小节课。"
+          persistent-hint
+        ></v-textarea>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="primary" @click="editPeriodOpen = false">取消</v-btn>
+        <v-btn color="primary" variant="flat" @click="confirmEditPeriod">确认</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
 </template>
 
 <script setup>
@@ -140,6 +169,30 @@ function confirmEditHour() {
   }
   LS.hour = JSON.stringify(res)
   editHourOpen.value = false
+}
+
+const editPeriodOpen = ref(false)
+const editPeriodProxy = ref('')
+function openEditPeriodDialog() {
+  const obj = JSON.parse(LS.period)
+  let res = ''
+  for (const line of obj) {
+    res += `${line[0]} ${line[1]}\n`
+  }
+  editPeriodProxy.value = res
+  editPeriodOpen.value = true
+}
+function confirmEditPeriod() {
+  let res = []
+  for (const line of editPeriodProxy.value.split('\n')) {
+    const pair = line.split(' ')
+    if (pair.length !== 2) {
+      continue
+    }
+    res.push([Number(pair[0]), Number(pair[1])])
+  }
+  LS.period = JSON.stringify(res)
+  editPeriodOpen.value = false
 }
 
 function showAbout() {
