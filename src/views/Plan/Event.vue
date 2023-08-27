@@ -4,7 +4,7 @@
       v-for="(event, i) in events" 
       @click="openOptDialog(event.id, i)"
       v-ripple 
-      class="mt-2 pa-3 green" 
+      class="mt-2 pa-3"
       :class="[eventColor[i]]"
     >
       <div class="text-h5">{{ event.title }}</div>
@@ -150,7 +150,7 @@ function openAddDialog() {
   addDialog.value = {
     title: '',
     content: '',
-    date: time.today(),
+    date: today,
     time: 43200
   }
   addDialogOpen.value = true

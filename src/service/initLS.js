@@ -9,5 +9,6 @@ export default () => {
   LS.work = '[]'
   LS.plan = '[]'
   LS.event = '[]'
+  LS.routine = '[]'
   window.location.reload()
 }

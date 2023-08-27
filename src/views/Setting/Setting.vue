@@ -88,7 +88,7 @@
         <v-textarea
           label="小节课时间点"
           v-model="editHourProxy"
-          hint="一行表示一小节课，包含两个空格隔开的时刻。时刻形如08:00，注意使用半角冒号。"
+          hint="一行表示一小节课，包含两个空格隔开的时刻，分别表示小节课的上课下课时间。时刻形如08:00，注意使用半角冒号。"
           persistent-hint
         ></v-textarea>
       </v-card-text>

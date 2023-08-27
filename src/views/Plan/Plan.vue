@@ -4,7 +4,7 @@
       v-for="(plan, i) in plans" 
       @click="openOptDialog(plan.id, i)"
       v-ripple 
-      class="mt-2 pa-3 green" 
+      class="mt-2 pa-3" 
       :class="[planColor[i]]"
     >
       <div class="text-h5">{{ plan.title }}</div>
@@ -152,7 +152,7 @@ const addDialog = ref({
   content: '',
   date: 0,
   start: 0,
-  end: 0
+  end: 86340
 })
 function openAddDialog() {
   addDialog.value = {
@@ -160,7 +160,7 @@ function openAddDialog() {
     content: '',
     date: time.today(),
     start: 0,
-    end: 0
+    end: 86340
   }
   addDialogOpen.value = true
 }
