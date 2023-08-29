@@ -1,9 +1,9 @@
 <template>
   <div class="overflow-hidden bg-grey-lighten-3 h-100" style="padding-bottom: 96px">
-    <v-sheet 
-      v-for="(event, i) in events" 
+    <v-sheet
+      v-for="(event, i) in events"
       @click="openOptDialog(event.id, i)"
-      v-ripple 
+      v-ripple
       class="mt-2 pa-3"
       :class="[eventColor[i]]"
     >
@@ -215,7 +215,7 @@ function confirmEditDialog() {
 }
 
 .past {
-  border-left: #B00020 4px solid;
+  border-left: #FB8C00 4px solid;
 }
 
 .ing {

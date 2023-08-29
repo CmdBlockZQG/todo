@@ -11,7 +11,7 @@ function plans(date) {
       res.push(plan)
     }
   }
-  return res.sort((x, y) => x.start === y.start ? x.end - y.end : x.start - y.start)
+  return res.sort((x, y) => x.end === y.end ? x.start - y.start : x.end - y.end)
 }
 
 function events(date) {
@@ -19,7 +19,7 @@ function events(date) {
   const res = []
   for (let eventId of eventIdList) {
     const event = JSON.parse(LS[eventId])
-    if (event.date === date) {
+    if (event.date >= date) {
       res.push(event)
     }
   }
@@ -34,7 +34,7 @@ function routines(date) {
   let loopStart
   for (let routineId of routineIdList) {
     const routine = JSON.parse(LS[routineId])
-    switch (x.type) {
+    switch (routine.type) {
       case 'w':
         loopStart = date - (wd.day - 1) * 86400
         break
@@ -47,11 +47,11 @@ function routines(date) {
         loopStart = routine.startDate + tmp * routine.len * 86400
         break
       case 'ow':
-        if (wd.week % 2 == 1) loopStart = date - (wd.day - 1) * 86400
+        if (wd.week % 2 === 1) loopStart = date - (wd.day - 1) * 86400
         else loopStart = date - 7 * 86400 - (wd.day - 1) * 86400
         break
       case 'ew':
-        if (wd.week % 2 == 0) loopStart = date - (wd.day - 1) * 86400
+        if (wd.week % 2 === 0) loopStart = date - (wd.day - 1) * 86400
         else loopStart = date - 7 * 86400 - (wd.day - 1) * 86400
         break
     }
@@ -68,7 +68,7 @@ function routines(date) {
       }
     }
   }
-  return res.sort((x, y) => x.start === y.start ? x.end - y.end : x.start - y.start)
+  return res.sort((x, y) => x.end === y.end ? x.start - y.start : x.end - y.end)
 }
 
 function courses(date) {

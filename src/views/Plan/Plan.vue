@@ -1,10 +1,10 @@
 <template>
   <div class="overflow-hidden bg-grey-lighten-3 h-100" style="padding-bottom: 96px">
-    <v-sheet 
-      v-for="(plan, i) in plans" 
+    <v-sheet
+      v-for="(plan, i) in plans"
       @click="openOptDialog(plan.id, i)"
-      v-ripple 
-      class="mt-2 pa-3" 
+      v-ripple
+      class="mt-2 pa-3"
       :class="[planColor[i]]"
     >
       <div class="text-h5">{{ plan.title }}</div>
@@ -126,7 +126,7 @@ function updatePlans() {
     return res
   }).sort((a, b) => {
     if (a.date === b.date) {
-      return a.start === b.start ? a.end - b.end : a.start - b.start
+      return a.end === b.end ? a.start - b.start : a.end - b.end
     } else {
       return a.date - b.date
     }
@@ -226,7 +226,7 @@ function confirmEditDialog() {
 }
 
 .past {
-  border-left: #B00020 4px solid;
+  border-left: #FB8C00 4px solid;
 }
 
 .ing {
