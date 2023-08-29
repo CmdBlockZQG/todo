@@ -237,7 +237,7 @@ function dialogConfirm() {
     remark: editProxy.value.remark,
     arr: arrIdList
   })
-  courseIdList.value.unshift(courseId)
+  courseIdList.value.push(courseId)
   LS.course = JSON.stringify(courseIdList.value)
   LS.arr = JSON.stringify(arrangeIdList.value)
   dialogOpen.value = false

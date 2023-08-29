@@ -80,7 +80,7 @@
         <v-textarea 
           label="日常安排"
           v-model="editDialog.arr"
-          hint="每行表示一个安排，包含三个空格隔开的部分。第一部分为一个整数x，表示日常发生在周期的第x天；接下来两个部分为两个时刻，分别表示开始时间和结束时间。时刻形如08:00，24时制，注意使用半角冒号。"
+          hint="每行表示一个安排，包含四个空格隔开的部分。第一部分为一个整数x，表示日常发生在周期的第x天；接下来两个部分为两个时刻，分别表示开始时间和结束时间。时刻形如08:00，24时制，注意使用半角冒号。最后一个部分为备注。开始结束时间可省略，默认为缺省值(0:00~23:59)。"
           persistent-hint
           density="compact"
         ></v-textarea>
@@ -157,23 +157,23 @@ const arrDesc = computed(() => {
     switch (x.type) {
       case 'w':
         res = `每周${dayList.map(x => WeekdayChar[x]).join('、')} `
-        break;
+        break
       case 'm':
         res = `每月${dayList.join('、')}日 `
-        break;
+        break
       case 'xd':
         if (x.arr.length === 1) {
           res = `每${x.len}天一次 `
         } else {
           res += `每${x.len}天的第${dayList.join('、')}天 `
         }
-        break;
+        break
       case 'ow':
         res = `单周周${dayList.map(x => WeekdayChar[x]).join('、')} `
-        break;
+        break
       case 'ew':
         res = `双周周${dayList.map(x => WeekdayChar[x]).join('、')} `
-        break;
+        break
     }
 
     if (flag) {
@@ -211,7 +211,7 @@ const curRoutineDesc = computed(() => {
     }
     res += `${map[x.type]}<br>`
   }
-  res += x.arr.map(y => `第${y.day}天 ${time.timeTsToStr(y.start)} ~ ${time.timeTsToStr(y.end)}`).join('<br>')
+  res += x.arr.map(y => `第${y.day}天 ${time.timeTsToStr(y.start)} ~ ${time.timeTsToStr(y.end)} ${y.remark}`).join('<br>')
   return res
 })
 const editDialog = ref({
@@ -240,7 +240,7 @@ function openEditDialog(index) {
       type: curRoutine.value.type,
       startDate: curRoutine.value.startDate || today,
       len: curRoutine.value.len || 2,
-      arr: curRoutine.value.arr.map(x => `${x.day} ${time.timeTsToStr(x.start)} ${time.timeTsToStr(x.end)}`).join('\n')
+      arr: curRoutine.value.arr.map(x => x.start === 0 && x.end === 86340 ? `${x.day} ${x.remark}` : `${x.day} ${time.timeTsToStr(x.start)} ${time.timeTsToStr(x.end)} ${x.remark}`).join('\n')
     }
   }
   
@@ -250,12 +250,21 @@ function confirmEditDialog() {
   const arr = []
   for (const line of editDialog.value.arr.split('\n')) {
     const tl = line.split(' ')
-    if (tl.length !== 3) continue
-    arr.push({
-      day: Number(tl[0]),
-      start: time.timeStrToTs(tl[1]), 
-      end: time.timeStrToTs(tl[2])
-    })
+    if (tl.length === 1 || tl.length === 2) {
+      arr.push({
+        day: Number(tl[0]),
+        start: 0, 
+        end: 86340,
+        remark: tl[1] ? tl[1] : ''
+      })
+    } else if (tl.length === 3 || tl.length === 4) {
+      arr.push({
+        day: Number(tl[0]),
+        start: time.timeStrToTs(tl[1]), 
+        end: time.timeStrToTs(tl[2]),
+        remark: tl[3] ? tl[3] : ''
+      })
+    }
   }
   let res
   if (editDialog.value.type === 'xd') {
