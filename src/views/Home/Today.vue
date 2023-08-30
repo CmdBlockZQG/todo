@@ -113,6 +113,7 @@
 </template>
 
 <script setup>
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import time from '../../utils/time'
 import scheduler from '../../service/scheduler.js'
 import { useRouter } from 'vue-router'
@@ -126,49 +127,67 @@ function deltaToStr(d) {
   return h ? `${h}h${m}min` : `${m}min`
 }
 
-const today = time.today()
-const curTime = time.curTime()
+const today = ref(time.today())
+const curTime = ref(time.curTime())
+
+const onVisibilityChange = () => {
+  if (document.visibilityState === 'visible') {
+    today.value = time.today()
+    curTime.value = time.curTime()
+  }
+}
+onMounted(() => {
+  document.addEventListener('visibilitychange', onVisibilityChange)
+})
+onUnmounted(() => {
+  document.removeEventListener('visibilitychange', onVisibilityChange)
+})
 
 const cmp = (x, y) => x.end === y.end ? x.start - y.start : x.end - y.end
-let plans = [...scheduler.plans(today), ...scheduler.routines(today)].sort(cmp)
-plans = plans.filter(x => x.start !== 0 || x.end !== 86340).concat(plans.filter(x => x.start === 0 && x.end === 86340))
-plans = plans.map(x => {
-  let res
-  if (x.start === 0 && x.end === 86340) {
-    res = { status: 'ing' }
-  } else if (curTime > x.end) {
-    res = {
-      status: 'past',
-      statusDesc: '已结束'
+
+const plans = computed(() => {
+  let res = [...scheduler.plans(today.value), ...scheduler.routines(today.value)].sort(cmp)
+  res = res.filter(x => x.start !== 0 || x.end !== 86340).concat(res.filter(x => x.start === 0 && x.end === 86340))
+  res = res.map(x => {
+    let t
+    if (x.start === 0 && x.end === 86340) {
+      t = { status: 'ing' }
+    } else if (curTime.value > x.end) {
+      t = {
+        status: 'past',
+        statusDesc: '已结束'
+      }
+    } else if (curTime.value >= x.start) {
+      t = {
+        status: 'ing',
+        statusDesc: '距离结束还剩',
+        timeLeft: deltaToStr(x.end - curTime.value)
+      }
+    } else {
+      t = {
+        status: 'future',
+        statusDesc: '距离开始还剩',
+        timeLeft: deltaToStr(x.start - curTime.value)
+      }
     }
-  } else if (curTime >= x.start) {
-    res = {
-      status: 'ing',
-      statusDesc: '距离结束还剩',
-      timeLeft: deltaToStr(x.end - curTime)
-    }
-  } else {
-    res = {
-      status: 'future',
-      statusDesc: '距离开始还剩',
-      timeLeft: deltaToStr(x.start - curTime)
-    }
-  }
-  return Object.assign(x, res)
+    return Object.assign(x, t)
+  })
+  return res
 })
-const events = scheduler.events(today).map(x => {
+
+const events = computed(() => scheduler.events(today.value).map(x => {
   let res
-  if (x.date > today) {
+  if (x.date > today.value) {
     res = {
       status: 'future',
       statusDesc: '还剩',
-      timeLeft: `${Math.floor((x.date - today) / 86400)}天`
+      timeLeft: `${Math.floor((x.date - today.value) / 86400)}天`
     }
-  } else if (x.time > curTime) {
+  } else if (x.time > curTime.value) {
     res = {
       status: 'future',
       statusDesc: '还剩',
-      timeLeft: deltaToStr(x.time - curTime)
+      timeLeft: deltaToStr(x.time - curTime.value)
     }
   } else {
     res = {
@@ -177,13 +196,14 @@ const events = scheduler.events(today).map(x => {
     }
   }
   return Object.assign(x, res)
-})
-const courses = scheduler.courses(today)
+}))
+
+const courses = computed(() => scheduler.courses(today.value))
 
 const hour = JSON.parse(LS.hour)
 const period = JSON.parse(LS.period)
 
-function getRows() {
+const courseRows = computed(() => {
   const res = []
   for (const i of hour) {
     res.push({
@@ -208,11 +228,11 @@ function getRows() {
   }
 
   let flag = true
-  for (const i of courses) {
+  for (const i of courses.value) {
     const start = hour[i.hour[0] - 1][0],
-          end = hour[i.hour[1] - 1][1]
+      end = hour[i.hour[1] - 1][1]
     let t
-    if (curTime > end) {
+    if (curTime.value > end) {
       t = {
         status: 'expired'
       }
@@ -220,15 +240,14 @@ function getRows() {
       t = {
         status: 'ing',
         statusDesc: '距离下课还剩',
-        timeLeft: deltaToStr(end - curTime)
+        timeLeft: deltaToStr(end - curTime.value)
       }
     } else if (flag) {
       t = {
         status: 'future',
         statusDesc: '距离上课还剩',
-        timeLeft: deltaToStr(start - curTime)
+        timeLeft: deltaToStr(start - curTime.value)
       }
-      console.log(i, t)
       flag = false
     } else {
       t = {
@@ -243,11 +262,8 @@ function getRows() {
       title: i.course.title,
     })
   }
-
   return res
-}
-
-const courseRows = getRows()
+})
 
 </script>
 
