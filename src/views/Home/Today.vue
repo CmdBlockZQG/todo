@@ -9,13 +9,12 @@
     </template>
   </v-app-bar>
   <v-main>
-    <div class="overflow-hidden bg-grey-lighten-3 h-100">
-      <!--进行中/将来的事项-->
+    <div class="overflow-hidden bg-grey-lighten-3 h-100 pb-6">
+      <!--事项-->
       <v-sheet
-        v-ripple
         class="mt-2 pa-3 d-flex"
-        v-for="plan in activePlans"
-        :class="[curTime >= plan.start ? 'ing' : 'future']"
+        v-for="plan in plans"
+        :class="plan.status"
       >
         <div style="width: 70%">
           <div class="text-h5">{{ plan.title }}</div>
@@ -24,55 +23,69 @@
             <template v-if="plan.remark"><br>123123{{ plan.remark }}</template>
           </div>
         </div>
-        <div class="text-center d-flex flex-column justify-center desc-box" style="width: 30%">
+        <div v-if="plan.statusDesc" class="text-center d-flex flex-column justify-center" style="width: 30%">
           <div class="text-caption d-flex align-center justify-center">
             <v-icon icon="mdi-clock-outline"></v-icon>
             <div class="ml-1 text-body-2">
               {{ time.timeTsToStr(plan.start) }}~{{ time.timeTsToStr(plan.end) }}
             </div>
           </div>
-          <div class="text-caption">距离{{ curTime >= plan.start ? '结束' : '开始' }}还剩</div>
-          <div class="text-h6 font-weight-black" :class="[curTime >= plan.start ? 'text-warning' : 'text-primary']">{{ timeLeftStr(plan.start, plan.end) }}</div>
-        </div>
-      </v-sheet>
-      <!--隐藏/显示已过期事项按钮-->
-      <v-btn block density="compact" variant="tonal" class="mt-2 text-caption text-disabled" ripple v-if="expiredPlans.length" @click="showExpiredPlans = !showExpiredPlans">
-        {{ showExpiredPlans ? '隐藏' : '显示' }}已过期事项
-        <v-icon :icon="showExpiredPlans ? 'mdi-chevron-up' : 'mdi-chevron-down'"></v-icon>
-      </v-btn>
-      <!--已过期事项-->
-      <v-sheet
-        v-ripple
-        class="mt-2 pa-3 expired"
-        v-for="plan in expiredPlans"
-        v-show="showExpiredPlans"
-      >
-        <div class="text-h5">{{ plan.title }}</div>
-        <div>
-          {{ plan.content }}
-          <template v-if="plan.remark"><br>123123{{ plan.remark }}</template>
-        </div>
-        <div class="text-caption d-flex align-center">
-          <v-icon icon="mdi-clock-outline"></v-icon>
-          <div class="ml-1 text-body-2">
-            {{ time.timeTsToStr(plan.start) }}~{{ time.timeTsToStr(plan.end) }}
-          </div>
+          <div class="text-caption">{{ plan.statusDesc }}</div>
+          <div
+            class="text-h6 font-weight-black"
+            v-if="plan.timeLeft"
+            :class="[plan.status === 'ing' ? 'text-warning' : 'text-primary']"
+          >{{ plan.timeLeft }}</div>
         </div>
       </v-sheet>
       <!--当日课表-->
-      <div class="mt-2">这里应该是课表 但是还没做好</div>
-      <!--将来的事件-->
+      <div class="mt-1">
+        <table style="border-spacing: 4px;">
+          <tbody>
+            <tr v-for="i in courseRows" class="bg-white">
+              <td v-if="i.period" v-html="i.period.desc" :rowspan="i.period.len" class="text-caption text-center pa-1">
+              </td>
+              <td class="pa-1 text-caption">
+                {{ i.hour.start }}<br>
+                {{ i.hour.end }}
+              </td>
+              <td v-if="i.course" :rowspan="i.course.len" :class="i.course.status" class="pa-1 w-100">
+                <div class="float-left">
+                  <div class="text-h5">{{ i.course.title }}</div>
+                  <div>
+                    {{ i.course.courseRemark }}
+                    <template v-if="i.course.arrRemark"><br>{{ i.course.arrRemark }}</template>
+                  </div>
+                  <div class="text-caption d-flex align-center">
+                    <v-icon icon="mdi-map-marker-outline"></v-icon>
+                    <div class="ml-1 text-body-2">
+                      {{ i.course.place }}
+                    </div>
+                  </div>
+                </div>
+                <div v-if="i.course.timeLeft" class="text-center d-flex flex-column justify-center float-right">
+                  <div class="text-caption">{{ i.course.statusDesc }}</div>
+                  <div
+                    class="text-h6 font-weight-black"
+                    :class="[i.course.status === 'ing' ? 'text-success' : 'text-warning' ]"
+                  >{{ i.course.timeLeft }}</div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!--事件-->
       <v-sheet
-        v-ripple
         class="mt-2 pa-3 d-flex"
-        v-for="event in activeEvents"
-        :class="[curTime > event.time ? 'past' : 'future']"
+        v-for="event in events"
+        :class="event.status"
       >
         <div style="width: 70%">
           <div class="text-h5">{{ event.title }}</div>
           <div>{{ event.content }}</div>
         </div>
-        <div class="text-center d-flex flex-column justify-center desc-box" style="width: 30%">
+        <div class="text-center d-flex flex-column justify-center" style="width: 30%">
           <template v-if="today < event.date">
             <div class="text-caption d-flex align-center justify-center">
               <v-icon icon="mdi-calendar-outline"></v-icon>
@@ -81,7 +94,7 @@
               </div>
             </div>
             <div class="text-caption">还剩</div>
-            <div class="text-h6 font-weight-black text-primary" >{{ Math.floor((event.date - today) / 86400) }}天</div>
+            <div class="text-h6 font-weight-black text-primary" >{{ event.timeLeft }}</div>
           </template>
           <template v-else>
             <div class="text-caption d-flex align-center justify-center">
@@ -90,30 +103,9 @@
                 {{ time.timeTsToStr(event.time) }}
               </div>
             </div>
-            <div class="text-caption">还剩</div>
-            <div class="text-h6 font-weight-black text-warning" >{{ timeLeftStr(0, event.time) }}</div>
+            <div class="text-caption">{{ event.statusDesc }}</div>
+            <div class="text-h6 font-weight-black text-warning" >{{ event.timeLeft }}</div>
           </template>
-        </div>
-      </v-sheet>
-      <!--隐藏/显示已过期事件按钮-->
-      <v-btn block density="compact" variant="tonal" class="mt-2 text-caption text-disabled" ripple v-if="expiredEvents.length" @click="showExpiredEvents = !showExpiredEvents">
-        {{ showExpiredPlans ? '隐藏' : '显示' }}已过期事件
-        <v-icon :icon="showExpiredEvents ? 'mdi-chevron-up' : 'mdi-chevron-down'"></v-icon>
-      </v-btn>
-      <!--已过期事件-->
-      <v-sheet
-        v-ripple
-        class="mt-2 pa-3 expired"
-        v-for="event in expiredEvents"
-        v-show="showExpiredEvents"
-      >
-        <div class="text-h5">{{ event.title }}</div>
-        <div>{{ event.content }}</div>
-        <div class="text-caption d-flex align-center">
-          <v-icon icon="mdi-clock-outline"></v-icon>
-          <div class="ml-1 text-body-2">
-            今天 {{ time.timeTsToStr(event.time) }}
-          </div>
         </div>
       </v-sheet>
     </div>
@@ -121,40 +113,138 @@
 </template>
 
 <script setup>
-import { ref, computed, watchEffect, onMounted } from 'vue'
-import dialog from '../../utils/dialog.js'
-import genId from '../../utils/genId.js'
 import time from '../../utils/time'
 import scheduler from '../../service/scheduler.js'
+
+const LS = window.localStorage
+function deltaToStr(d) {
+  const h = Math.floor(d / 3600),
+    m = Math.floor((d % 3600) / 60)
+  return h ? `${h}h${m}min` : `${m}min`
+}
 
 const today = time.today()
 const curTime = time.curTime()
 
 const cmp = (x, y) => x.end === y.end ? x.start - y.start : x.end - y.end
-const plans = [...scheduler.plans(today), ...scheduler.routines(today)].sort(cmp)
-const events = scheduler.events(today)
-const courses = scheduler.events(today)
-
-const activePlans = plans.filter(x => x.end >= curTime)
-const expiredPlans = plans.filter(x => x.end < curTime)
-
-const activeEvents = events.filter(x => x.date > today || x.time > curTime)
-const expiredEvents = events.filter(x => x.date === today && x.time <= curTime)
-
-const showExpiredPlans = ref(false)
-const showExpiredEvents = ref(false)
-
-
-
-function timeLeftStr(start, end) {
-  const deltaToStr = (d) => {
-    const h = Math.floor(d / 3600),
-          m = Math.floor((d % 3600) / 60)
-    return h ? `${h}h${m}min` : `${m}min`
+let plans = [...scheduler.plans(today), ...scheduler.routines(today)].sort(cmp)
+plans = plans.filter(x => x.start !== 0 || x.end !== 86340).concat(plans.filter(x => x.start === 0 && x.end === 86340))
+plans = plans.map(x => {
+  let res
+  if (x.start === 0 && x.end === 86340) {
+    res = { status: 'ing' }
+  } else if (curTime > x.end) {
+    res = {
+      status: 'past',
+      statusDesc: '已结束'
+    }
+  } else if (curTime >= x.start) {
+    res = {
+      status: 'ing',
+      statusDesc: '距离结束还剩',
+      timeLeft: deltaToStr(x.end - curTime)
+    }
+  } else {
+    res = {
+      status: 'future',
+      statusDesc: '距离开始还剩',
+      timeLeft: deltaToStr(x.start - curTime)
+    }
   }
-  if (curTime >= start) return deltaToStr(end - curTime)
-  else return deltaToStr(start - curTime)
+  return Object.assign(x, res)
+})
+const events = scheduler.events(today).map(x => {
+  let res
+  if (x.date > today) {
+    res = {
+      status: 'future',
+      statusDesc: '还剩',
+      timeLeft: `${Math.floor((x.date - today) / 86400)}天`
+    }
+  } else if (x.time > curTime) {
+    res = {
+      status: 'future',
+      statusDesc: '还剩',
+      timeLeft: deltaToStr(x.time - curTime)
+    }
+  } else {
+    res = {
+      status: 'past',
+      statusDesc: '已逾期',
+    }
+  }
+  return Object.assign(x, res)
+})
+const courses = scheduler.courses(today)
+
+const hour = JSON.parse(LS.hour)
+const period = JSON.parse(LS.period)
+
+function getRows() {
+  const res = []
+  for (const i of hour) {
+    res.push({
+      hour: {
+        start: time.timeTsToStr(i[0]),
+        end: time.timeTsToStr(i[1])
+      }
+    })
+  }
+
+  for (let i = 0; i < period.length; ++i) {
+    const j = period[i]
+    const st = hour[j[0] - 1][0]
+    let descChar = ''
+    if (st < 43200) descChar = 'A'
+    else if (st < 64800) descChar = 'P'
+    else descChar = 'N'
+    res[j[0] - 1].period = {
+      len: j[1] - j[0] + 1,
+      desc: `${descChar}<br>${i + 1}`
+    }
+  }
+
+  let flag = true
+  for (const i of courses) {
+    const start = hour[i.hour[0] - 1][0],
+          end = hour[i.hour[1] - 1][1]
+    let t
+    if (curTime > end) {
+      t = {
+        status: 'expired'
+      }
+    } else if (curTime >= start) {
+      t = {
+        status: 'ing',
+        statusDesc: '距离下课还剩',
+        timeLeft: deltaToStr(end - curTime)
+      }
+    } else if (flag) {
+      t = {
+        status: 'future',
+        statusDesc: '距离上课还剩',
+        timeLeft: deltaToStr(start - curTime)
+      }
+      console.log(i, t)
+      flag = false
+    } else {
+      t = {
+        status: 'future'
+      }
+    }
+    res[i.hour[0] - 1].course = Object.assign(t, {
+      len: i.hour[1] - i.hour[0] + 1,
+      place: i.place,
+      arrRemark: i.remark,
+      courseRemark: i.course.remark,
+      title: i.course.title,
+    })
+  }
+
+  return res
 }
+
+const courseRows = getRows()
 
 </script>
 
@@ -173,9 +263,5 @@ function timeLeftStr(start, end) {
 
 .future {
   border-left: #4CAF50 4px solid;
-}
-
-.desc-box {
-  border-left: #b0b0b0 2px dashed;
 }
 </style>

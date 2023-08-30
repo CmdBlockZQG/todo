@@ -23,7 +23,7 @@ function events(date) {
       res.push(event)
     }
   }
-  return res.sort((x, y) => x.time - y.time)
+  return res.sort((x, y) => x.date === y.date ?  x.time - y.time : x.date - y.date)
 }
 
 function routines(date) {
