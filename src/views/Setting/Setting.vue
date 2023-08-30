@@ -70,7 +70,7 @@
         ></v-text-field>
       </v-card-text>
       <v-card-actions>
-        <v-spacer></v-spacer>
+        <div class="spacer"></div>
         <v-btn color="primary" @click="editOrigOpen = false">取消</v-btn>
         <v-btn color="primary" variant="flat" @click="confirmEditOrig">确认</v-btn>
       </v-card-actions>
@@ -93,7 +93,7 @@
         ></v-textarea>
       </v-card-text>
       <v-card-actions>
-        <v-spacer></v-spacer>
+        <div class="spacer"></div>
         <v-btn color="primary" @click="editHourOpen = false">取消</v-btn>
         <v-btn color="primary" variant="flat" @click="confirmEditHour">确认</v-btn>
       </v-card-actions>
@@ -116,7 +116,7 @@
         ></v-textarea>
       </v-card-text>
       <v-card-actions>
-        <v-spacer></v-spacer>
+        <div class="spacer"></div>
         <v-btn color="primary" @click="editPeriodOpen = false">取消</v-btn>
         <v-btn color="primary" variant="flat" @click="confirmEditPeriod">确认</v-btn>
       </v-card-actions>

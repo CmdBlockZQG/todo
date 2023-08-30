@@ -1,10 +1,10 @@
 <template>
   <div class="overflow-hidden bg-grey-lighten-3 h-100" style="padding-bottom: 96px">
-    <v-sheet 
-      v-for="(routine, i) in routines" 
+    <v-sheet
+      v-for="(routine, i) in routines"
       @click="openOptDialog(i)"
-      v-ripple 
-      class="mt-2 pa-3" 
+      v-ripple
+      class="mt-2 pa-3"
     >
       <div class="text-h5">{{ routine.title }}</div>
       <div>{{ routine.content }}</div>
@@ -34,13 +34,13 @@
     <v-card>
       <v-card-title><span class="text-h5">{{ curIndex === -1 ? '添加' : '编辑' }}日常</span></v-card-title>
       <div class="px-4">
-        <v-text-field 
-          label="标题" 
+        <v-text-field
+          label="标题"
           v-model="editDialog.title"
           hide-details="auto"
           density="compact"
         ></v-text-field>
-        <v-textarea 
+        <v-textarea
           label="内容"
           v-model="editDialog.content"
           hide-details="auto"
@@ -65,8 +65,8 @@
               label="日常类型"
               style="width: 50%;"
             ></v-select>
-            <v-text-field 
-              label="周期天数" 
+            <v-text-field
+              label="周期天数"
               v-model.number="editDialog.len"
               type="number"
               hide-details="auto"
@@ -77,7 +77,7 @@
           <div class="mb-1">周期开始于：<DatePicker v-model="editDialog.startDate"></DatePicker></div>
         </template>
 
-        <v-textarea 
+        <v-textarea
           label="日常安排"
           v-model="editDialog.arr"
           hint="每行表示一个安排，包含四个空格隔开的部分。第一部分为一个整数x，表示日常发生在周期的第x天；接下来两个部分为两个时刻，分别表示开始时间和结束时间。时刻形如08:00，24时制，注意使用半角冒号。最后一个部分为备注。开始结束时间可省略，默认为缺省值(0:00~23:59)。"
@@ -86,7 +86,7 @@
         ></v-textarea>
       </div>
       <v-card-actions>
-        <v-spacer></v-spacer>
+        <div class="spacer"></div>
         <v-btn color="primary" @click="editDialogOpen = false">取消</v-btn>
         <v-btn color="primary" variant="flat" @click="confirmEditDialog">确认</v-btn>
       </v-card-actions>
@@ -243,7 +243,7 @@ function openEditDialog(index) {
       arr: curRoutine.value.arr.map(x => x.start === 0 && x.end === 86340 ? `${x.day} ${x.remark}` : `${x.day} ${time.timeTsToStr(x.start)} ${time.timeTsToStr(x.end)} ${x.remark}`).join('\n')
     }
   }
-  
+
   editDialogOpen.value = true
 }
 function confirmEditDialog() {
@@ -253,14 +253,14 @@ function confirmEditDialog() {
     if (tl.length === 1 || tl.length === 2) {
       arr.push({
         day: Number(tl[0]),
-        start: 0, 
+        start: 0,
         end: 86340,
         remark: tl[1] ? tl[1] : ''
       })
     } else if (tl.length === 3 || tl.length === 4) {
       arr.push({
         day: Number(tl[0]),
-        start: time.timeStrToTs(tl[1]), 
+        start: time.timeStrToTs(tl[1]),
         end: time.timeStrToTs(tl[2]),
         remark: tl[3] ? tl[3] : ''
       })

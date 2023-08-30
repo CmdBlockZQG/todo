@@ -98,7 +98,7 @@
         </v-window>
       </v-card-text>
       <v-card-actions>
-        <v-spacer></v-spacer>
+        <div class="spacer"></div>
         <v-btn variant="text" @click="dialogShow = false">取消</v-btn>
         <v-btn color="primary" variant="text" @click="dialogConfirm">确认</v-btn>
       </v-card-actions>

@@ -36,7 +36,7 @@
         <v-textarea label="内容" v-model="addDialog.content"></v-textarea>
       </v-card-text>
       <v-card-actions>
-        <v-spacer></v-spacer>
+        <div class="spacer"></div>
         <v-btn color="primary" @click="addDialogOpen = false">取消</v-btn>
         <v-btn color="primary" variant="flat" @click="confirmAddDialog">确认</v-btn>
       </v-card-actions>
@@ -74,7 +74,7 @@
         <v-textarea label="内容" v-model="editDialog.content"></v-textarea>
       </v-card-text>
       <v-card-actions>
-        <v-spacer></v-spacer>
+        <div class="spacer"></div>
         <v-btn color="primary" @click="editDialogOpen = false">取消</v-btn>
         <v-btn color="primary" variant="flat" @click="confirmEditDialog">确认</v-btn>
       </v-card-actions>

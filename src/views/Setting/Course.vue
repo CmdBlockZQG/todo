@@ -98,7 +98,7 @@
         ></v-textarea>
       </v-card-text>
       <v-card-actions>
-        <v-spacer></v-spacer>
+        <div class="spacer"></div>
         <v-btn color="primary" @click="showHelp">查看格式说明</v-btn>
         <v-btn color="primary" @click="dialogOpen = false">取消</v-btn>
         <v-btn color="primary" variant="flat" @click="dialogConfirm">确认</v-btn>
@@ -117,7 +117,7 @@
         <v-textarea v-model="dataProxy" :readonly="dataDialogMode"></v-textarea>
       </v-card-text>
       <v-card-actions>
-        <v-spacer></v-spacer>
+        <div class="spacer"></div>
         <v-btn v-if="!dataDialogMode" color="primary" @click="dataDialogOpen = false">取消</v-btn>
         <v-btn color="primary" variant="flat" @click="dataDialogConfirm">确认</v-btn>
       </v-card-actions>
