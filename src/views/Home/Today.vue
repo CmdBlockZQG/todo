@@ -5,7 +5,7 @@
       {{ time.dateTsToWeekdayStr(today) }}
     </v-app-bar-title>
     <template v-slot:append>
-      <v-btn icon="mdi-calendar-month-outline"></v-btn>
+      <v-btn icon="mdi-calendar-month-outline" @click="router.push('/preview')"></v-btn>
     </template>
   </v-app-bar>
   <v-main>
@@ -20,7 +20,7 @@
           <div class="text-h5">{{ plan.title }}</div>
           <div>
             {{ plan.content }}
-            <template v-if="plan.remark"><br>123123{{ plan.remark }}</template>
+            <template v-if="plan.remark"><br>{{ plan.remark }}</template>
           </div>
         </div>
         <div v-if="plan.statusDesc" class="text-center d-flex flex-column justify-center" style="width: 30%">
@@ -115,6 +115,9 @@
 <script setup>
 import time from '../../utils/time'
 import scheduler from '../../service/scheduler.js'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const LS = window.localStorage
 function deltaToStr(d) {
