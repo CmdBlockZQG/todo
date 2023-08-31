@@ -44,8 +44,8 @@
               style="cursor: pointer;"
               @click="showDetails(courseTable[i][j])"
             >
-              <div>{{ courseTable[i][j].title }}</div>
-              <div>{{ courseTable[i][j].place }}</div>
+              <div class="mb-1" style="line-height: 1.2em;">{{ courseTable[i][j].title }}</div>
+              <div style="line-height: 1.2em;">{{ courseTable[i][j].place }}</div>
             </td>
           </template>
         </tr>
