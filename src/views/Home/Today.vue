@@ -249,7 +249,7 @@ const courseRows = computed(() => {
       t = {
         status: 'expired'
       }
-    } else if (curTime >= start) {
+    } else if (curTime.value >= start) {
       t = {
         status: 'ing',
         statusDesc: '距离下课还剩',

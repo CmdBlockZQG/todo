@@ -61,6 +61,10 @@ export default {
     const dayMap = ['', '一', '二', '三', '四', '五', '六', '日']
     return `第${week}周星期${dayMap[day]}`
   },
+  curWeek() {
+    const d = today() - Number(window.localStorage.orig)
+    return Math.floor(d / (86400 * 7)) + 1
+  },
   dateTsToWeekdayObj(ts) { // 将某一天的时间戳转换为教学周星期对象
     const d = ts - Number(window.localStorage.orig)
     const week = Math.floor(d / (86400 * 7)) + 1
