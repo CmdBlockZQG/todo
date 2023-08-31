@@ -43,8 +43,13 @@
         <table style="border-spacing: 4px;">
           <tbody>
             <tr v-for="i in courseRows" class="bg-white">
-              <td v-if="i.period" v-html="i.period.desc" :rowspan="i.period.len" class="text-caption text-center pa-1">
-              </td>
+              <td
+                v-if="i.period"
+                v-html="i.period.desc"
+                :rowspan="i.period.len"
+                class="text-caption text-center pa-1"
+                :style="{ 'background-color': i.period.bgColor }"
+              ></td>
               <td class="pa-1 text-caption">
                 {{ i.hour.start }}<br>
                 {{ i.hour.end }}
@@ -217,13 +222,21 @@ const courseRows = computed(() => {
   for (let i = 0; i < period.length; ++i) {
     const j = period[i]
     const st = hour[j[0] - 1][0]
-    let descChar = ''
-    if (st < 43200) descChar = 'A'
-    else if (st < 64800) descChar = 'P'
-    else descChar = 'N'
+    let descChar = '', bgColor = ''
+    if (st < 43200) {
+      descChar = 'A'
+      bgColor = '#B2DFDB'
+    } else if (st < 64800) {
+      descChar = 'P'
+      bgColor = '#BBDEFB'
+    } else {
+      descChar = 'N'
+      bgColor = '#D1C4E9'
+    }
     res[j[0] - 1].period = {
       len: j[1] - j[0] + 1,
-      desc: `${descChar}<br>${i + 1}`
+      desc: `${descChar}<br>${i + 1}`,
+      bgColor
     }
   }
 

@@ -42,7 +42,19 @@ const router = createRouter({
         {
           path: '/overview',
           component: () => import('./views/Home/Overview.vue'),
-          meta: { nav: 'overview' }
+          meta: { nav: 'overview' },
+          children: [
+            {
+              path: '/overview',
+              component: () => import('./views/Overview/Course.vue'),
+              meta: { tab: 'course' }
+            },
+            {
+              path: 'schedule',
+              component: () => import('./views/Overview/Schedule.vue'),
+              meta: { tab: 'schedule' }
+            }
+          ]
         }
       ]
     },
