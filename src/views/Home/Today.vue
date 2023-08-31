@@ -5,6 +5,15 @@
       {{ time.dateTsToWeekdayStr(today) }}
     </v-app-bar-title>
     <template v-slot:append>
+      <v-btn stacked v-if="expiredCount" @click="router.push('/plan')">
+        <v-badge
+          color="error"
+          :content="expiredCount"
+          content="10"
+        >
+          <v-icon icon="mdi-timer-alert-outline"></v-icon>
+        </v-badge>
+      </v-btn>
       <v-btn icon="mdi-calendar-month-outline" @click="router.push('/preview')"></v-btn>
     </template>
   </v-app-bar>
@@ -134,6 +143,10 @@ function deltaToStr(d) {
 
 const today = ref(time.today())
 const curTime = ref(time.curTime())
+
+const expiredCount = computed(() => {
+  return scheduler.countExpired(today.value, curTime.value)
+})
 
 const onVisibilityChange = () => {
   if (document.visibilityState === 'visible') {

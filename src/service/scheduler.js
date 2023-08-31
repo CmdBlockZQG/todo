@@ -85,9 +85,27 @@ function courses(date) {
   return res.sort((x, y) => (x.hour[0] === y.hour[0]) ? x.hour[1] - y.hour[1] : x.hour[0] - y.hour[0])
 }
 
+function countExpired(today, curTime) {
+  const planIdList = JSON.parse(LS.plan)
+  let res = 0
+  for (let planId of planIdList) {
+    const plan = JSON.parse(LS[planId])
+    if (plan.date < today || (plan.date === today && plan.end < curTime)) ++res
+  }
+
+  const eventIdList = JSON.parse(LS.event)
+  for (let eventId of eventIdList) {
+    const event = JSON.parse(LS[eventId])
+    if (event.date < today || (event.date === today && event.time < curTime)) ++res
+  }
+
+  return res
+}
+
 export default {
   plans,
   events,
   routines,
-  courses
+  courses,
+  countExpired
 }
