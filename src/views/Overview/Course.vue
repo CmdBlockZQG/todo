@@ -1,20 +1,20 @@
 <template>
   <div class="overflow-hidden bg-grey-lighten-3 h-100 pb-6">
     <div class="mt-2 px-6 d-flex align-center justify-space-between">
-      <v-btn icon="mdi-chevron-left" variant="text" @click="step(-1)" :disabled="week === 1"></v-btn>
-      <v-btn variant="tonal">第{{ week }}周</v-btn>
-      <v-btn icon="mdi-chevron-right" variant="text" @click="step(1)"></v-btn>
+      <v-btn icon="mdi-chevron-left" variant="text" density="compact" @click="step(-1)" :disabled="week === 1"></v-btn>
+      <v-btn variant="tonal" density="compact">第{{ week }}周</v-btn>
+      <v-btn icon="mdi-chevron-right" variant="text" density="compact" @click="step(1)"></v-btn>
     </div>
     <table v-if="refreshTable" class="w-100" style="border-spacing: 4px; table-layout: fixed;">
       <colgroup>
-        <col style="width: 18px;" />
-        <col style="width: 40px;" />
+        <col style="width: 16px;" />
+        <col style="width: 36px;" />
       </colgroup>
       <thead>
         <tr>
           <th></th>
           <th></th>
-          <th v-for="(th, i) in thead" class="pa-1 bg-white">
+          <th v-for="(th, i) in thead" class="bg-white">
             <div class="text-subtitle-2 font-weight-bold">{{ i + 1 }}</div>
             <div class="text-caption">{{ th }}</div>
           </th>
@@ -26,11 +26,11 @@
             v-if="rh.period"
             v-html="rh.period.desc"
             :rowspan="rh.period.len"
-            class="text-caption text-center pa-1"
+            class="text-caption text-center"
             :style="{ 'background-color': rh.period.bgColor }"
           >
           </td>
-          <td class="pa-1 text-caption bg-white">
+          <td class="text-caption text-center bg-white">
             {{ rh.hour.start }}<br>
             {{ rh.hour.end }}
           </td>
