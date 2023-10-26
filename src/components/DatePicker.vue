@@ -151,7 +151,7 @@ function dialogConfirm() {
     if (relDay.value.dir) res += 86400 * relDay.value.day
     else res -= 86400 * relDay.value.day
   } else if (tab.value === 1) {
-    res = time.dateStrToTs(`${ymd.value.year}-${ymd.value.month}-${ymd.value.day}`)
+    res = time.dateStrToTs(`${ymd.value.year}/${ymd.value.month}/${ymd.value.day}`)
   } else if (tab.value === 2) {
     res = Number(window.localStorage.orig) + (wd.value.week - 1) * 7 * 86400 + (wd.value.day - 1) * 86400
   }

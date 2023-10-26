@@ -37,6 +37,7 @@ export default {
     }
   },
   dateStrToTs(dateStr) { // 将形如2023-2-13或2023/2/13的日期字符串转为时间戳
+    dateStr = dateStr.replace(/-/g, '/')
     return new Date(dateStr).getTime() / 1000
   },
   dateTsToObj(dateTs) { // 将某一天的时间戳转换为日期对象
