@@ -25,12 +25,12 @@
 <!--      </v-menu>-->
 <!--    </template>-->
 
-    <template v-slot:extension>
+    <!-- <template v-slot:extension>
       <v-tabs v-model="tabSelect" grow color="primary">
         <v-tab value="course" @click="router.replace('/overview')">课表</v-tab>
         <v-tab value="schedule" @click="router.replace('/overview/schedule')">安排</v-tab>
       </v-tabs>
-    </template>
+    </template> -->
   </v-app-bar>
   <v-main>
     <router-view />

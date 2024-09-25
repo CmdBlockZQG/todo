@@ -30,6 +30,7 @@
   <v-dialog
     v-model="editDialogOpen"
     width="400"
+    persistent
   >
     <v-card>
       <v-card-title><span class="text-h5">{{ curIndex === -1 ? '添加' : '编辑' }}日常</span></v-card-title>
@@ -96,6 +97,7 @@
   <v-dialog
     v-model="optDialogOpen"
     width="400"
+    persistent
   >
     <v-card>
       <v-card-title><span class="text-h5">{{ curRoutine.title }}</span></v-card-title>

@@ -33,6 +33,7 @@
   <v-dialog
     v-model="addDialogOpen"
     width="400"
+    persistent
   >
     <v-card>
       <v-card-title><span class="text-h5">添加事项</span></v-card-title>
@@ -54,6 +55,7 @@
   <v-dialog
     v-model="optDialogOpen"
     width="400"
+    persistent
   >
     <v-card>
       <v-card-title><span class="text-h5">{{ curPlan.title }}</span></v-card-title>
@@ -77,6 +79,7 @@
   <v-dialog
     v-model="editDialogOpen"
     width="400"
+    persistent
   >
     <v-card>
       <v-card-title><span class="text-h5">编辑事项</span></v-card-title>

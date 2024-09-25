@@ -28,6 +28,7 @@
   <v-dialog
     v-model="addDialogOpen"
     width="400"
+    persistent
   >
     <v-card>
       <v-card-title><span class="text-h5">添加作业</span></v-card-title>
@@ -47,6 +48,7 @@
   <v-dialog
     v-model="optDialogOpen"
     width="400"
+    persistent
   >
     <v-card>
       <v-card-title><span class="text-h5">{{ curWork.title }}</span></v-card-title>
@@ -66,6 +68,7 @@
   <v-dialog
     v-model="editDialogOpen"
     width="400"
+    persistent
   >
     <v-card>
       <v-card-title><span class="text-h5">编辑作业</span></v-card-title>

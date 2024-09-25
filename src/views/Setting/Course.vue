@@ -85,6 +85,7 @@
   <v-dialog
     v-model="dialogOpen"
     width="400"
+    persistent
   >
     <v-card>
       <v-card-title><span class="text-h5">{{ curCourseIndex === -1 ? '新建' : '修改' }}课程</span></v-card-title>
@@ -109,6 +110,7 @@
   <v-dialog
     v-model="dataDialogOpen"
     width="400"
+    persistent
   >
     <v-card>
       <v-card-title><span class="text-h5">{{ dataDialogMode ? '导出' : '导入' }}</span></v-card-title>

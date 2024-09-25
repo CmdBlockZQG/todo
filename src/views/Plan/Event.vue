@@ -30,6 +30,7 @@
   <v-dialog
     v-model="addDialogOpen"
     width="400"
+    persistent
   >
     <v-card>
       <v-card-title><span class="text-h5">添加事件</span></v-card-title>
@@ -50,6 +51,7 @@
   <v-dialog
     v-model="optDialogOpen"
     width="400"
+    persistent
   >
     <v-card>
       <v-card-title><span class="text-h5">{{ curEvent.title }}</span></v-card-title>
@@ -71,6 +73,7 @@
   <v-dialog
     v-model="editDialogOpen"
     width="400"
+    persistent
   >
     <v-card>
       <v-card-title><span class="text-h5">编辑事件</span></v-card-title>

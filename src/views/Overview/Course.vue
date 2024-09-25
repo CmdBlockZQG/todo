@@ -56,6 +56,7 @@
   <v-dialog
     v-model="detailDialogOpen"
     width="300"
+    persistent
   >
     <v-card>
       <v-card-title><span class="text-h5">{{ curCourse.title }}</span></v-card-title>

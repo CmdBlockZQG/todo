@@ -6,6 +6,7 @@
   <v-dialog
     v-model="dialogShow"
     width="400"
+    persistent
   >
     <v-card>
       <v-tabs v-model="tab">

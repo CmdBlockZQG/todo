@@ -58,6 +58,7 @@
   <v-dialog
     v-model="editOrigOpen"
     width="400"
+    persistent
   >
     <v-card>
       <v-card-title><span class="text-h5">编辑第一教学周周一日期</span></v-card-title>
@@ -81,6 +82,7 @@
   <v-dialog
     v-model="editHourOpen"
     width="400"
+    persistent
   >
     <v-card>
       <v-card-title><span class="text-h5">编辑小节课时间点</span></v-card-title>
@@ -104,6 +106,7 @@
   <v-dialog
     v-model="editPeriodOpen"
     width="400"
+    persistent
   >
     <v-card>
       <v-card-title><span class="text-h5">编辑大节课时间范围</span></v-card-title>
