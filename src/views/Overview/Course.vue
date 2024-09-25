@@ -34,7 +34,7 @@
             {{ rh.hour.start }}<br>
             {{ rh.hour.end }}
           </td>
-          <template v-for="i in [0, 1, 2, 3, 4, 5, 6]">
+          <template v-for="i in (courseWeekend ? [0, 1, 2, 3, 4, 5, 6] : [0, 1, 2, 3, 4])">
             <td v-if="courseTable[i][j] === 0"></td>
             <td
               v-else-if="courseTable[i][j] !== 1"
@@ -85,14 +85,6 @@ const LS = window.localStorage
 
 const orig = Number(LS.orig)
 const week = ref(time.curWeek())
-const thead = computed(() => {
-  const res = []
-  const t = orig + (week.value - 1) * 7 * 86400
-  for (let i = 0; i < 7; ++i) {
-    res.push(time.dateTsToStr(t + i * 86400, '-', false))
-  }
-  return res
-})
 
 const hour = JSON.parse(LS.hour)
 const period = JSON.parse(LS.period)
@@ -172,6 +164,30 @@ const courseTable = computed(() => {
     for (let d = 1; d < len; ++d) {
       res[i][j + d] = 1
     }
+  }
+  return res
+})
+
+const courseWeekend = computed(() => { // 周末有没有课
+  let flag = false
+  for (let j = 0; j < hour.length; ++j) {
+    if (courseTable.value[5][j] !== 0) {
+      flag = true
+      break
+    }
+    if (courseTable.value[6][j] !== 0) {
+      flag = true
+      break
+    }
+  }
+  return flag
+})
+
+const thead = computed(() => {
+  const res = []
+  const t = orig + (week.value - 1) * 7 * 86400
+  for (let i = 0; i < (courseWeekend.value ? 7 : 5); ++i) {
+    res.push(time.dateTsToStr(t + i * 86400, '-', false))
   }
   return res
 })
