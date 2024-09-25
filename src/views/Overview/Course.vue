@@ -14,9 +14,9 @@
         <tr>
           <th></th>
           <th></th>
-          <th v-for="(th, i) in thead" class="bg-white">
+          <th v-for="(th, i) in thead" :class="[ th.today ? 'bg-indigo' : 'bg-white' ]">
             <div class="text-subtitle-2 font-weight-bold">{{ i + 1 }}</div>
-            <div class="text-caption">{{ th }}</div>
+            <div class="text-caption">{{ th.text }}</div>
           </th>
         </tr>
       </thead>
@@ -56,7 +56,6 @@
   <v-dialog
     v-model="detailDialogOpen"
     width="300"
-    persistent
   >
     <v-card>
       <v-card-title><span class="text-h5">{{ curCourse.title }}</span></v-card-title>
@@ -187,7 +186,10 @@ const thead = computed(() => {
   const res = []
   const t = orig + (week.value - 1) * 7 * 86400
   for (let i = 0; i < (courseWeekend.value ? 7 : 5); ++i) {
-    res.push(time.dateTsToStr(t + i * 86400, '-', false))
+    res.push({
+      text: time.dateTsToStr(t + i * 86400, '-', false),
+      today: t + i * 86400 === time.today()
+    })
   }
   return res
 })
