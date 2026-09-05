@@ -15,7 +15,7 @@
           <th></th>
           <th></th>
           <th v-for="(th, i) in thead" :class="[ th.today ? 'bg-indigo' : 'bg-white' ]">
-            <div class="text-subtitle-2 font-weight-bold">{{ i + 1 }}</div>
+            <div class="text-subtitle-2 font-weight-bold">{{ th.day }}</div>
             <div class="text-caption">{{ th.text }}</div>
           </th>
         </tr>
@@ -34,7 +34,7 @@
             {{ rh.hour.start }}<br>
             {{ rh.hour.end }}
           </td>
-          <template v-for="i in (courseWeekend ? [0, 1, 2, 3, 4, 5, 6] : [0, 1, 2, 3, 4])">
+          <template v-for="i in visibleDayIndices">
             <td v-if="courseTable[i][j] === 0"></td>
             <td
               v-else-if="courseTable[i][j] !== 1"
@@ -82,7 +82,6 @@ import DatePicker from "../../components/DatePicker.vue";
 
 const LS = window.localStorage
 
-const orig = Number(LS.orig)
 const week = ref(time.curWeek())
 
 const hour = JSON.parse(LS.hour)
@@ -169,26 +168,39 @@ const courseTable = computed(() => {
 
 const courseWeekend = computed(() => { // 周末有没有课
   let flag = false
-  for (let j = 0; j < hour.length; ++j) {
-    if (courseTable.value[5][j] !== 0) {
-      flag = true
-      break
+  for (let i = 0; i < 7; ++i) {
+    const weekday = (i + 1) % 7
+    if (weekday === 0 || weekday === 6) {
+      for (let j = 0; j < hour.length; ++j) {
+        if (courseTable.value[i][j] !== 0) {
+          flag = true
+          break
+        }
+      }
     }
-    if (courseTable.value[6][j] !== 0) {
-      flag = true
-      break
-    }
+    if (flag) break
   }
   return flag
 })
 
+const visibleDayIndices = computed(() => {
+  const all = Array.from({ length: 7 }, (_, i) => (time.weekStart() + i + 6) % 7)
+  if (courseWeekend.value) return all
+  return all.filter(i => {
+    const weekday = (i + 1) % 7
+    return weekday !== 0 && weekday !== 6
+  })
+})
+
 const thead = computed(() => {
   const res = []
-  const t = orig + (week.value - 1) * 7 * 86400
-  for (let i = 0; i < (courseWeekend.value ? 7 : 5); ++i) {
+  const t = time.weekStartTs(week.value)
+  for (const i of visibleDayIndices.value) {
+    const dayOffset = ((i + 1) % 7 - time.weekStart() + 7) % 7
     res.push({
-      text: time.dateTsToStr(t + i * 86400, '-', false),
-      today: t + i * 86400 === time.today()
+      day: i + 1,
+      text: time.dateTsToStr(t + dayOffset * 86400, '-', false),
+      today: t + dayOffset * 86400 === time.today()
     })
   }
   return res

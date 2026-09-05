@@ -122,7 +122,6 @@ import dialog from '../../utils/dialog.js'
 import genId from '../../utils/genId.js'
 import time from '../../utils/time'
 import DatePicker from '../../components/DatePicker.vue'
-const WeekdayChar = ['', '一', '二', '三', '四', '五', '六', '日']
 
 const LS = window.localStorage
 const today = time.today()
@@ -158,7 +157,7 @@ const arrDesc = computed(() => {
     let res = ''
     switch (x.type) {
       case 'w':
-        res = `每周${dayList.map(x => WeekdayChar[x]).join('、')} `
+        res = `每周${dayList.map(x => time.weekdayName(x)).join('、')} `
         break
       case 'm':
         res = `每月${dayList.join('、')}日 `
@@ -171,10 +170,10 @@ const arrDesc = computed(() => {
         }
         break
       case 'ow':
-        res = `单周周${dayList.map(x => WeekdayChar[x]).join('、')} `
+        res = `单周周${dayList.map(x => time.weekdayName(x)).join('、')} `
         break
       case 'ew':
-        res = `双周周${dayList.map(x => WeekdayChar[x]).join('、')} `
+        res = `双周周${dayList.map(x => time.weekdayName(x)).join('、')} `
         break
     }
 

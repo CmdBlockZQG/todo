@@ -38,6 +38,15 @@
           <span class="text-caption">{{ time.dateTsToStr(orig) }}</span>
         </template>
       </v-list-item>
+      <v-list-item link @click="openEditWeekStartDialog">
+        <v-list-item-title>每周第一天</v-list-item-title>
+        <template v-slot:prepend>
+          <v-icon icon="mdi-calendar-week-outline"></v-icon>
+        </template>
+        <template v-slot:append>
+          <span class="text-caption">{{ weekStartLabel }}</span>
+        </template>
+      </v-list-item>
       <v-list-subheader>数据</v-list-subheader>
       <v-list-item link @click="">
         <template v-slot:prepend>
@@ -74,6 +83,26 @@
         <div class="spacer"></div>
         <v-btn color="primary" @click="editOrigOpen = false">取消</v-btn>
         <v-btn color="primary" variant="flat" @click="confirmEditOrig">确认</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+  <v-dialog v-model="editWeekStartOpen" width="400" persistent>
+    <v-card>
+      <v-card-title><span class="text-h5">设置每周第一天</span></v-card-title>
+      <v-card-text>
+        <v-select
+          v-model="editWeekStartProxy"
+          label="每周第一天"
+          :items="weekStartItems"
+          item-title="title"
+          item-value="value"
+        ></v-select>
+      </v-card-text>
+      <v-card-actions>
+        <div class="spacer"></div>
+        <v-btn color="primary" @click="editWeekStartOpen = false">取消</v-btn>
+        <v-btn color="primary" variant="flat" @click="confirmEditWeekStart">确认</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -129,7 +158,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import time from '../../utils/time.js'
 import dialog from '../../utils/dialog.js'
@@ -143,6 +172,25 @@ const editOrigProxy = ref('')
 function openEditOrigDialog() {
   editOrigProxy.value = time.dateTsToStr(orig.value)
   editOrigOpen.value = true
+}
+
+const weekStartItems = [
+  { title: '星期日', value: 0 },
+  { title: '星期一', value: 1 }
+]
+const currentWeekStart = ref(time.weekStart())
+const weekStartLabel = computed(() => currentWeekStart.value === 0 ? '星期日' : '星期一')
+const editWeekStartOpen = ref(false)
+const editWeekStartProxy = ref(time.weekStart())
+function openEditWeekStartDialog() {
+  editWeekStartProxy.value = time.weekStart()
+  editWeekStartOpen.value = true
+}
+function confirmEditWeekStart() {
+  const newStart = Number(editWeekStartProxy.value)
+  LS.weekStart = String(newStart)
+  currentWeekStart.value = newStart
+  editWeekStartOpen.value = false
 }
 function confirmEditOrig() {
   orig.value = time.dateStrToTs(editOrigProxy.value)

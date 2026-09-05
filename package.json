@@ -20,5 +20,9 @@
     "@vitejs/plugin-vue": "^4.3.3",
     "vite": "^4.4.9",
     "vite-plugin-pwa": "^0.16.4"
+  },
+  "allowScripts": {
+    "esbuild@0.18.20": true,
+    "fsevents@2.3.3": true
   }
 }

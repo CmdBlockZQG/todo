@@ -154,7 +154,7 @@ function dialogConfirm() {
   } else if (tab.value === 1) {
     res = time.dateStrToTs(`${ymd.value.year}/${ymd.value.month}/${ymd.value.day}`)
   } else if (tab.value === 2) {
-    res = Number(window.localStorage.orig) + (wd.value.week - 1) * 7 * 86400 + (wd.value.day - 1) * 86400
+    res = time.weekStartTs(wd.value.week) + time.weekdayOffset(wd.value.day) * 86400
   }
 
   emit('update:modelValue', res)

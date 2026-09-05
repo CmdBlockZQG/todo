@@ -1,6 +1,24 @@
 const ts = () => Math.floor(new Date().getTime() / 1000)
 const today = () => new Date(new Date().toLocaleDateString()).getTime() / 1000
 const curTime = () => ts() - today()
+const weekdayMap = ['日', '一', '二', '三', '四', '五', '六']
+
+function weekStart() {
+  return Number(window.localStorage.weekStart) === 0 ? 0 : 1
+}
+
+function weekdayName(day) {
+  return weekdayMap[day % 7]
+}
+
+function weekStartTs(week = 1) {
+  const firstWeekStart = Number(window.localStorage.orig) - (weekStart() === 0 ? 86400 : 0)
+  return firstWeekStart + (week - 1) * 7 * 86400
+}
+
+function weekdayOffset(day) {
+  return weekStart() === 0 ? day % 7 : day - 1
+}
 
 export default {
   ts,
@@ -56,25 +74,27 @@ export default {
     return year ? `${y}${sep}${m}${sep}${d}` : `${m}${sep}${d}`
   },
   dateTsToWeekdayStr(ts) { // 将某一天的时间戳转换为形如`第1周星期一`的字符串
-    const d = ts - Number(window.localStorage.orig)
-    const week = Math.floor(d / (86400 * 7)) + 1
-    const day = Math.floor((d % (7 * 86400)) / 86400) + 1
-    const dayMap = ['', '一', '二', '三', '四', '五', '六', '日']
-    return `第${week}周星期${dayMap[day]}`
+    const { week, day } = this.dateTsToWeekdayObj(ts)
+    return `第${week}周星期${weekdayName(day)}`
   },
   curWeek() {
-    const d = today() - Number(window.localStorage.orig)
+    const d = today() - weekStartTs()
     return Math.floor(d / (86400 * 7)) + 1
   },
   dateTsToWeekdayObj(ts) { // 将某一天的时间戳转换为教学周星期对象
-    const d = ts - Number(window.localStorage.orig)
+    const d = ts - weekStartTs()
     const week = Math.floor(d / (86400 * 7)) + 1
-    const day = Math.floor((d % (7 * 86400)) / 86400) + 1
+    const dateWeekday = new Date(ts * 1000).getDay()
+    const day = dateWeekday === 0 ? 7 : dateWeekday
     return {
       week,
       day
     }
   },
+  weekStart,
+  weekStartTs,
+  weekdayOffset,
+  weekdayName,
   timeStrToTs(timeStr) { // 将形如08:30的时刻字符串转为时间戳
     const t = timeStr.split(':')
     return t[0] * 3600 + t[1] * 60
